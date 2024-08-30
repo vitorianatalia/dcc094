@@ -1,7 +1,13 @@
+import os
+
 from github import Github
 from github import Auth
+from dotenv import load_dotenv
 
-g = Github("access_token")
+load_dotenv()
+access_token = os.getenv('ACCESS_TOKEN')
+
+g = Github(access_token)
 
 repo = g.get_repo("Rocketseat/umbriel")
 # repo.get_contents("")
