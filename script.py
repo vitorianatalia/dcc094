@@ -31,6 +31,7 @@ for commit in commits:
         for commit in commit_details:
             print(commit.get('filename'))
 
+# Arquivos de configuração podem ter sido alterados em commits sem a palavra test    
 
 # Change in specific config files
 config_files = ["karma.conf.js", "jest.config.js", "pytest.ini", "testng.xml"]
