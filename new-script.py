@@ -1,8 +1,11 @@
 import os
 import re
+import sys
+import time
+from collections import defaultdict
 from github import Github
 from dotenv import load_dotenv
-from collections import defaultdict
+from github.GithubException import RateLimitExceededException
 
 # Load environment variables
 load_dotenv()
@@ -20,17 +23,33 @@ qualitative_commits_count = 10  # Number of commits for qualitative analysis
 
 def get_keywords():
     """Returns a list of keywords related to testing."""
-    return ["test", "teste", "tests", "add test", "update test", "remove test", "test case", "fixture"]
+    return [
+        r'\btest(s)?\b', r'\bteste\b', r'\btest cases?\b', r'\badd(ed)? test\b', 
+        r'\bupdate(d)? test\b', r'\bremove(d)? test\b', r'\bfix\b', r'\bassert\b', r'\bintegration\b'
+    ]
 
-def check_commit(commit_sha, repo):
-    """Check the details of a specific commit, focusing on test-related changes."""
-    commit = repo.get_commit(commit_sha)
+def check_commit(commit_sha, repo, test_files_set):
+    """Check the details of a specific commit, focusing on test-related changes, with retries."""
+    retries = 3
+    for attempt in range(retries):
+        try:
+            commit = repo.get_commit(commit_sha)
+            break  # If successful, break out of retry loop
+        except RateLimitExceededException as e:
+            print(f"Rate limit exceeded. Retrying in 60 seconds... ({attempt + 1}/{retries})")
+            time.sleep(60)  # Wait before retrying
+        except Exception as e:
+            print(f"Error fetching commit {commit_sha}: {e}")
+            return None  # Skip this commit after failed retries
+    else:
+        print(f"Failed to fetch commit {commit_sha} after {retries} attempts.")
+        return None
+
     changed_files = commit.files
-
     result = []
     for file in changed_files:
         patch = file.patch or ""
-        if contains_test_code(patch):
+        if file.filename in test_files_set or contains_test_code(patch):
             result.append({
                 'filename': file.filename,
                 'status': file.status,
@@ -38,17 +57,21 @@ def check_commit(commit_sha, repo):
                 'patch': patch
             })
     
-    # Determine if the commit is related to tests
-    commit_message = commit.commit.message
-    related_to_tests = any(keyword in commit_message.lower() for keyword in get_keywords())
-    objective = determine_commit_objective(commit_message, changed_files)
-    
+    if result:
+        return {
+            'commit_sha': commit_sha,
+            'message': commit.commit.message,
+            'files': result,
+            'related_to_tests': True,
+            'objective': determine_commit_objective(commit.commit.message, changed_files)
+        }
+
     return {
         'commit_sha': commit_sha,
-        'message': commit_message,
-        'files': result,
-        'related_to_tests': related_to_tests,
-        'objective': objective
+        'message': commit.commit.message,
+        'files': [],
+        'related_to_tests': False,
+        'objective': "No test files involved"
     }
 
 def contains_test_code(patch):
@@ -107,10 +130,10 @@ def find_test_files(repo):
 
 def is_test_file(filename):
     """Check if a file is related to testing based on its filename or extension."""
-    test_extensions = [".test.js", ".spec.js", ".test.py", ".spec.py", ".feature"]
-    test_patterns = ["test", "spec", "unittest", "integration", "e2e"]
+    test_extensions = [".test.js", ".spec.js", ".test.py", ".spec.py", ".feature", ".test.ts", ".spec.ts"]
+    test_patterns = ["test", "spec", "unittest", "integration", "e2e", "fixture"]
     
-    return any(filename.endswith(ext) for ext in test_extensions) or any(pattern in filename.lower() for pattern in test_patterns)
+    return filename.endswith(tuple(test_extensions)) or any(pattern in filename.lower() for pattern in test_patterns)
 
 def is_test_directory(path):
     """Check if a directory path is related to testing."""
@@ -120,26 +143,31 @@ def is_test_directory(path):
 def generate_report(test_files_set, output_file, commit_messages):
     """Generate a summary report of test-related commits and files."""
     with open(output_file, 'w') as file:
-        file.write("Test-Related Commits Report\n")
-        file.write("------------------------------\n")
+        file.write("====================================\n")
+        file.write("         Test-Related Commits Report\n")
+        file.write("====================================\n")
         
-        file.write("\nTest files found:\n")
+        file.write("\nTest Files Found:\n")
+        file.write("-----------------\n")
         for test_file in test_files_set:
             file.write(f" - {test_file}\n")
         
         file.write("\nTest-Related Commits:\n")
+        file.write("---------------------\n")
         for commit_info in commit_messages:
-            file.write(f" - Commit: {commit_info['message']}\n")
-            file.write(f"   Files altered:\n")
+            file.write(f"Commit SHA: {commit_info['commit_sha']}\n")
+            file.write(f"Message: {commit_info['message']}\n")
+            file.write("Files Altered:\n")
             for file_detail in commit_info['files']:
-                file.write(f"     - {file_detail['filename']}: {file_detail['status']} with {file_detail['changes']} changes\n")
-            file.write("------------------------------\n")
+                file.write(f"  - {file_detail['filename']}: {file_detail['status']} ({file_detail['changes']} changes)\n")
+            file.write("--------------------------------------------------\n")
 
 def generate_qualitative_report(qualitative_commits, output_file):
     """Generate a detailed qualitative report of the top commits."""
     with open(output_file, 'a') as file:
-        file.write("\nQualitative Analysis of Commits\n")
-        file.write("------------------------------\n")
+        file.write("\n\n====================================\n")
+        file.write("     Qualitative Analysis of Commits\n")
+        file.write("====================================\n")
         
         for commit_info in qualitative_commits:
             commit_url = f"https://github.com/{repo.full_name}/commit/{commit_info['commit_sha']}"
@@ -150,48 +178,51 @@ def generate_qualitative_report(qualitative_commits, output_file):
             file.write(f"Objective: {commit_info['objective']}\n")
             file.write("Files Altered:\n")
             for file_detail in commit_info['files']:
-                file.write(f"  - {file_detail['filename']}: {file_detail['status']} with {file_detail['changes']} changes\n")
-            file.write("------------------------------\n")
+                file.write(f"  - {file_detail['filename']}: {file_detail['status']} ({file_detail['changes']} changes)\n")
+            file.write("--------------------------------------------------\n")
 
-def main():
-    output_file = "test_changes_report.txt"
+def process_commits(repo, test_files_set, max_commits_to_process):
     commit_messages = []
     qualitative_commits = []
-    test_files_set = set()
-
     commits = repo.get_commits()
-    total_commits = min(commits.totalCount, max_commits_to_process) if max_commits_to_process else commits.totalCount
+
     analyzed_commits = 0
-
-    # Find all test files
-    test_files_set = find_test_files(repo)
-
     for commit in commits:
         if analyzed_commits >= max_commits_to_process:
             break
 
-        analyzed_commits += 1
         commit_sha = commit.sha
-        commit_message = commit.commit.message
-        
-        commit_details = check_commit(commit_sha, repo)
-        
-        test_files_altered = [detail for detail in commit_details['files'] if detail['filename'] in test_files_set]
-        
-        if commit_details['related_to_tests']:
-            commit_messages.append({
-                'message': commit_message,
-                'files': test_files_altered
-            })
+        commit_details = check_commit(commit_sha, repo, test_files_set)
 
+        if commit_details is not None and commit_details['related_to_tests']:
+            commit_messages.append(commit_details)
             if len(qualitative_commits) < qualitative_commits_count:
                 qualitative_commits.append(commit_details)
 
-        # Print progress
-        progress = (analyzed_commits / total_commits) * 100
-        print(f"\nCommit analysis progress: {progress:.2f}%", end="\r")
+        analyzed_commits += 1
+        progress = (analyzed_commits / max_commits_to_process) * 100
+        
+        # Clear the line before printing progress
+        sys.stdout.write("\033[K")  # ANSI code to clear the line
+        print(f"\rCommit analysis progress: {progress:.2f}%", end="")
 
-    print("\nGenerating final report... please wait.")
+        # Throttle the requests if processing too many commits quickly
+        if analyzed_commits % 100 == 0:
+            print("\nPausing for 10 seconds to avoid API rate limits...")
+            time.sleep(10)
+
+    # Ensure the progress ends with a clean line
+    print()
+
+    return commit_messages, qualitative_commits
+
+def main():
+    output_file = "test_changes_report.txt"
+    test_files_set = find_test_files(repo)
+    
+    commit_messages, qualitative_commits = process_commits(repo, test_files_set, max_commits_to_process)
+
+    print("Generating final report... please wait.")
     generate_report(test_files_set, output_file, commit_messages)
     generate_qualitative_report(qualitative_commits, output_file)
     print("Final report completed.")
