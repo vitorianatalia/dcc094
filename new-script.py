@@ -140,13 +140,23 @@ def is_test_directory(path):
     test_directories = ["tests", "spec", "test", "unittests"]
     return any(dir in path.lower() for dir in test_directories)
 
-def generate_report(test_files_set, output_file, commit_messages):
+def generate_report(test_files_set, output_file, commit_messages, total_commits, top_contributors, test_related_commit_count):
     """Generate a summary report of test-related commits and files."""
     with open(output_file, 'w') as file:
         file.write("====================================\n")
         file.write("         Test-Related Commits Report\n")
         file.write("====================================\n")
-        
+
+        file.write(f"\nTotal Commits in Repository: {total_commits}\n")  
+        file.write(f"Total Commits Processed: {len(commit_messages)}\n")
+        file.write(f"Test-Related Commits Found: {test_related_commit_count}\n")  
+
+        file.write("\nTop 10 Contributors for Test-Related Commits:\n")
+        file.write("--------------------------------------------\n")
+        for author, count in top_contributors:
+            file.write(f" - {author}: {count} commits related to tests\n")
+
+
         file.write("\nTest Files Found:\n")
         file.write("-----------------\n")
         for test_file in test_files_set:
@@ -185,8 +195,13 @@ def process_commits(repo, test_files_set, max_commits_to_process):
     commit_messages = []
     qualitative_commits = []
     commits = repo.get_commits()
+    total_commits = commits.totalCount
+
+    test_related_commit_count = 0 
 
     analyzed_commits = 0
+    author_commit_count = defaultdict(int)
+
     for commit in commits:
         if analyzed_commits >= max_commits_to_process:
             break
@@ -196,6 +211,12 @@ def process_commits(repo, test_files_set, max_commits_to_process):
 
         if commit_details is not None and commit_details['related_to_tests']:
             commit_messages.append(commit_details)
+            test_related_commit_count += 1
+
+            author = commit.commit.author.name or "Unknown"
+            author_commit_count[author] += 1  
+
+
             if len(qualitative_commits) < qualitative_commits_count:
                 qualitative_commits.append(commit_details)
 
@@ -214,16 +235,19 @@ def process_commits(repo, test_files_set, max_commits_to_process):
     # Ensure the progress ends with a clean line
     print()
 
-    return commit_messages, qualitative_commits
+    top_contributors = sorted(author_commit_count.items(), key=lambda x: x[1], reverse=True)[:10]
+
+
+    return commit_messages, qualitative_commits, total_commits, top_contributors, test_related_commit_count
 
 def main():
     output_file = "test_changes_report.txt"
     test_files_set = find_test_files(repo)
     
-    commit_messages, qualitative_commits = process_commits(repo, test_files_set, max_commits_to_process)
+    commit_messages, qualitative_commits, total_commits, top_contributors, test_related_commit_count = process_commits(repo, test_files_set, max_commits_to_process)
 
     print("Generating final report... please wait.")
-    generate_report(test_files_set, output_file, commit_messages)
+    generate_report(test_files_set, output_file, commit_messages, total_commits, top_contributors, test_related_commit_count)
     generate_qualitative_report(qualitative_commits, output_file)
     print("Final report completed.")
 
