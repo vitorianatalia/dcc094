@@ -13,7 +13,7 @@ access_token = os.getenv('ACCESS_TOKEN')
 
 # Initialize GitHub client
 g = Github(access_token)
-repo = g.get_repo("nodejs/node")
+repo = g.get_repo("Rocketseat/backend-template")
 
 # Configuration
 max_files_to_check = 5000  
@@ -209,25 +209,26 @@ def process_commits(repo, test_files_set, max_commits_to_process):
         commit_sha = commit.sha
         commit_details = check_commit(commit_sha, repo, test_files_set)
 
-        if commit_details is not None and commit_details['related_to_tests']:
+        analyzed_commits += 1
+
+        if commit_details is not None:
             commit_messages.append(commit_details)
+        if commit_details['related_to_tests']:
             test_related_commit_count += 1
 
-            author = commit.commit.author.name or "Unknown"
-            author_commit_count[author] += 1  
+        author = commit.commit.author.name or "Unknown"
+        author_commit_count[author] += 1  
 
+        if len(qualitative_commits) < qualitative_commits_count:
+            qualitative_commits.append(commit_details)
 
-            if len(qualitative_commits) < qualitative_commits_count:
-                qualitative_commits.append(commit_details)
-
-        analyzed_commits += 1
         progress = (analyzed_commits / max_commits_to_process) * 100
-        
+
         # Clear the line before printing progress
         sys.stdout.write("\033[K")  # ANSI code to clear the line
         print(f"\rCommit analysis progress: {progress:.2f}%", end="")
 
-        # Throttle the requests if processing too many commits quickly
+        # Throttle the requests if processing muitos commits rapidamente
         if analyzed_commits % 100 == 0:
             print("\nPausing for 10 seconds to avoid API rate limits...")
             time.sleep(10)
@@ -237,8 +238,8 @@ def process_commits(repo, test_files_set, max_commits_to_process):
 
     top_contributors = sorted(author_commit_count.items(), key=lambda x: x[1], reverse=True)[:10]
 
-
     return commit_messages, qualitative_commits, total_commits, top_contributors, test_related_commit_count
+
 
 def main():
     output_file = "test_changes_report.txt"
