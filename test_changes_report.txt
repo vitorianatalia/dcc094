@@ -2,6 +2,7 @@
          Test-Related Commits Report
 ====================================
 
+<<<<<<< Updated upstream
 Total Commits in Repository: 42280
 Total Commits Processed: 103
 Test-Related Commits Found: 103
@@ -6787,12 +6788,909 @@ Files Altered:
   - test/fixtures/test-runner/output/filtered-suite-order.mjs: added (49 changes)
   - test/fixtures/test-runner/output/filtered-suite-order.snapshot: added (166 changes)
   - test/fixtures/test-runner/output/source_mapped_locations.snapshot: modified (3 changes)
+=======
+Total Commits in Repository: 177
+Total Commits Processed: 177
+Test-Related Commits Found: 17
+
+Top 10 Contributors for Test-Related Commits:
+--------------------------------------------
+ - Diego Fernandes: 61 commits related to tests
+ - Renovate Bot: 42 commits related to tests
+ - Guilherme Pellizzetti: 27 commits related to tests
+ - Elias Gabriel: 18 commits related to tests
+ - Jakson Xavier: 13 commits related to tests
+ - Gabriel Buzzi Venturi: 9 commits related to tests
+ - Adriano Pereira Junior: 3 commits related to tests
+ - Matheus Pedroni: 1 commits related to tests
+ - João Paulo de Magalhães: 1 commits related to tests
+ - jaksonxavier: 1 commits related to tests
+
+Test Files Found:
+-----------------
+ - .env.testing.example
+ - test/jest-e2e.config.ts
+ - test/factories/users.factory.ts
+ - test/repositories/in-memory-users.repository.ts
+
+Test-Related Commits:
+---------------------
+Commit SHA: 94601c9cde6a58cd92d91968cc2841061f98a318
+Message: Merge pull request #83 from Rocketseat/chore/docker-compose-environment-variables
+
+chore: set environment variables
+Files Altered:
+--------------------------------------------------
+Commit SHA: f9fcca04ec2bf5cc8396bb8088cfdaeb8086dcdc
+Message: chore: set environment variables
+Files Altered:
+--------------------------------------------------
+Commit SHA: fbaa9f0690994543e82fd9a4ead5342132db1066
+Message: Merge pull request #82 from Rocketseat/chore/change-db-provider
+
+chore: change db provider
+Files Altered:
+  - .env.testing.example: modified (6 changes)
+  - src/application/use-cases/example-use-case.spec.ts: removed (18 changes)
+  - src/application/use-cases/user/get-user-by-email.use-case.spec.ts: added (50 changes)
+  - src/domain/value-objects/email.ts: added (27 changes)
+  - src/infra/http/graphql/resolvers/example.resolver.e2e-spec.ts: removed (36 changes)
+  - src/infra/http/graphql/resolvers/user.resolver.e2e-spec.ts: added (57 changes)
+  - test/factories/users.factory.ts: added (48 changes)
+  - test/repositories/in-memory-users.repository.ts: added (25 changes)
+--------------------------------------------------
+Commit SHA: 9c91aa17cbcb351d352e58dd82a6564e2fb40deb
+Message: chore: improves example codes
+Files Altered:
+  - src/application/use-cases/example-use-case.spec.ts: removed (18 changes)
+  - src/application/use-cases/user/get-user-by-email.use-case.spec.ts: added (50 changes)
+  - src/domain/value-objects/email.ts: added (27 changes)
+  - src/infra/http/graphql/resolvers/example.resolver.e2e-spec.ts: removed (36 changes)
+  - src/infra/http/graphql/resolvers/user.resolver.e2e-spec.ts: added (57 changes)
+  - test/factories/users.factory.ts: added (48 changes)
+  - test/repositories/in-memory-users.repository.ts: added (25 changes)
+--------------------------------------------------
+Commit SHA: b1475fcc5892cc081bce4d7cf459ce7adfc6b125
+Message: fix(ci): update `MySQL` credentials
+Files Altered:
+--------------------------------------------------
+Commit SHA: 43dcd5665dd17c3330ba907a983b27089f50dfcc
+Message: chore: change database provider
+Files Altered:
+  - .env.testing.example: modified (6 changes)
+--------------------------------------------------
+Commit SHA: 3da8c8aab4918a9e4568aa579d6a239f1065b50a
+Message: Rename vercel-deploy to vercel.json
+Files Altered:
+--------------------------------------------------
+Commit SHA: 9bb79165a3454dc511eccb9234371083b98bcd98
+Message: Merge pull request #80 from Rocketseat/chore/base-64-utils
+
+chore: add `base64Encode` function
+Files Altered:
+--------------------------------------------------
+Commit SHA: 86d35aaaa6bf37ca6f575665e755bab5ee7e2da6
+Message: Merge pull request #79 from Rocketseat/fix/dotenv-config
+
+fix: setup dotenv
+Files Altered:
+--------------------------------------------------
+Commit SHA: d5352e6478f953486da2ee7bcfe425229a5e6fe8
+Message: chore: utils folder mapper
+Files Altered:
+--------------------------------------------------
+Commit SHA: 6a75ada2147c1811b24fb92bcb8be020b5ee1d09
+Message: chore: add `base64Encode` function
+Files Altered:
+--------------------------------------------------
+Commit SHA: c8f703d25379f75296a58d1dcb0f0c9d62146e5a
+Message: fix: setup dotenv
+Files Altered:
+--------------------------------------------------
+Commit SHA: 33749202c2c6c9a9dc0c20a2be798c34877610eb
+Message: Merge pull request #77 from Rocketseat/ci/set-node-version-to-16
+
+ci: Set Node version to 16
+Files Altered:
+--------------------------------------------------
+Commit SHA: 8821b1bdfbc0868a473ac8372075ddbda44eda12
+Message: ci: Update JWT tokens
+Files Altered:
+--------------------------------------------------
+Commit SHA: 9c18a3e242c54e2e9a6d2bd87d37486f133ebbeb
+Message: ci: Set Node version to 16
+Files Altered:
+--------------------------------------------------
+Commit SHA: d0b6fcf1c3b562a63b93d2bb04e88ead981f0d7f
+Message: Merge pull request #75 from Rocketseat/feature/deploy-vercel
+
+feat: add vercel and typscript changes to deploy
+Files Altered:
+--------------------------------------------------
+Commit SHA: 488cf1c81582dbcccbf73fe560fce7a219803c9e
+Message: chore: update prisma version
+Files Altered:
+--------------------------------------------------
+Commit SHA: 2073e724d51e814123a6cf0878d8927eec87830a
+Message: chore: remove unused lightship lib
+Files Altered:
+--------------------------------------------------
+Commit SHA: b0d38477b109f2146d0028bbe1ad530f566a6f00
+Message: feat: add vercel and typscript changes to deploy
+Files Altered:
+--------------------------------------------------
+Commit SHA: 3360c285cdc911f17796768fe622e3b29b7ed68b
+Message: Merge pull request #73 from Rocketseat/feature/authentication
+
+feat: add support for authentication using JWT
+Files Altered:
+--------------------------------------------------
+Commit SHA: 9ab83ce3a180219f0df58650042b2ddb5fb04c3e
+Message: feat: Add JWT authentication and auth helpers
+Files Altered:
+--------------------------------------------------
+Commit SHA: 70aa91afa9c259e8a147c290e864d3f0b823ca40
+Message: Merge pull request #72 from Rocketseat/feature/config-envs
+
+feat: config envs
+Files Altered:
+--------------------------------------------------
+Commit SHA: d8fd898e88203bf2475cf5e888d737aa1bb28b51
+Message: feat: config database envs
+Files Altered:
+--------------------------------------------------
+Commit SHA: a6afdb819ded9b17217e76a995592c9f92580e15
+Message: feat: config app envs
+Files Altered:
+--------------------------------------------------
+Commit SHA: 7a62dbd1c06eccb97962c1181b920a1f68721258
+Message: Merge pull request #70 from Rocketseat/chore/shutdown-hooks
+
+chore: Enable shutdown listeners
+Files Altered:
+--------------------------------------------------
+Commit SHA: a5e75c3cd012202ed2901be9de1dae99bf25f939
+Message: chore: Enable shutdown listeners
+
+Enable hooks called in the terminating phase, this is used with Kubernetes to manage containers' lifecycles.
+Files Altered:
+--------------------------------------------------
+Commit SHA: c69fe1fb33002a66e3bfc0d79ce2777e074f6bb7
+Message: Merge pull request #66 from Rocketseat/fix/pkg
+
+fix(ci): Pin pkg version
+Files Altered:
+--------------------------------------------------
+Commit SHA: 6274e9bf60358492a35cbe46ec5086567ace9fea
+Message: fix(ci): Pin pkg version
+Files Altered:
+--------------------------------------------------
+Commit SHA: 88e062cd3afe25e14b3f2883406d8969a19dbcd5
+Message: chore: Format log level
+Files Altered:
+--------------------------------------------------
+Commit SHA: 80440f8e5979c9e7a8b3d05a96ea9b3af7a0cef6
+Message: chore: Serialize req.body
+Files Altered:
+--------------------------------------------------
+Commit SHA: fbf156b39ad44be3c80e6596a149f5ec137c0da1
+Message: fix: Use community faker instead of native one
+Files Altered:
+--------------------------------------------------
+Commit SHA: 58ed40bd073a6247edf9c97907b7ee94f9345e1d
+Message: chore: Update NestJS GraphQL plugin
+Files Altered:
+--------------------------------------------------
+Commit SHA: 61cb475e51cb2096c5f0c157f483adcd8899112f
+Message: Merge pull request #58 from Rocketseat/renovate/dd-trace-2.x
+
+fix(deps): update dependency dd-trace to v2.4.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: bafda730406d9215dd8b66af77080ee75c18bf8c
+Message: Merge branch 'main' into renovate/dd-trace-2.x
+Files Altered:
+--------------------------------------------------
+Commit SHA: be40434054be925c3b69a49e6573170cff7dcb0a
+Message: Merge pull request #50 from Rocketseat/renovate/major-typescript-eslint-monorepo
+
+chore(deps): update typescript-eslint monorepo to v5 (major)
+Files Altered:
+--------------------------------------------------
+Commit SHA: 29fdc808752280b5e94916d39241345ae8155fa0
+Message: Merge pull request #53 from Rocketseat/renovate/dotenv-expand-8.x
+
+fix(deps): update dependency dotenv-expand to v8
+Files Altered:
+--------------------------------------------------
+Commit SHA: 51912309690896386a5b95211e4174bb718d75a7
+Message: fix(deps): update dependency dotenv-expand to v8
+Files Altered:
+--------------------------------------------------
+Commit SHA: ce9807780515df068988c4ad77a4b630fcad0bab
+Message: fix(deps): update dependency dd-trace to v2.4.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: f1e1a5f168df3ecc7402b6717c8aca7c80f3e8fd
+Message: Merge pull request #59 from Rocketseat/revert-57-renovate/node-17.x
+
+Revert "chore(deps): update node.js to v17"
+Files Altered:
+--------------------------------------------------
+Commit SHA: e97385e2bc848d2e526cf0f5ed6ad2eb6d5154b0
+Message: Revert "chore(deps): update node.js to v17"
+Files Altered:
+--------------------------------------------------
+Commit SHA: 9988a38e5114cafd04cd51af7aad15925de7602c
+Message: Merge pull request #57 from Rocketseat/renovate/node-17.x
+
+chore(deps): update node.js to v17
+Files Altered:
+--------------------------------------------------
+Commit SHA: fd5d0ac9e59f07a093520a2cefd5e78780db5ec5
+Message: Merge pull request #51 from Rocketseat/renovate/nestjs-config-2.x
+
+fix(deps): update dependency @nestjs/config to v2
+Files Altered:
+--------------------------------------------------
+Commit SHA: 7bc472a5aa3d2fd3137de26819ae9a021a708d27
+Message: Merge pull request #48 from Rocketseat/renovate/major-commitlint-monorepo
+
+chore(deps): update dependency @commitlint/cli to v16
+Files Altered:
+--------------------------------------------------
+Commit SHA: 88fdf03ab465c48c1004be1e91ebbcf0ed1b3dad
+Message: Merge pull request #56 from Rocketseat/renovate/bitnami-kafka-3.x
+Files Altered:
+--------------------------------------------------
+Commit SHA: b3938838fecddf912c40108dcecc7f90370381a5
+Message: fix(deps): update dependency @nestjs/config to v2
+Files Altered:
+--------------------------------------------------
+Commit SHA: f3ea67a9f195c745228a9615dade22f3336561ee
+Message: chore(deps): update typescript-eslint monorepo to v5
+Files Altered:
+--------------------------------------------------
+Commit SHA: 8526284434cf8af43ecf6ee87c0fbcf6b88ab38a
+Message: chore(deps): update node.js to v17
+Files Altered:
+--------------------------------------------------
+Commit SHA: 312cb4f2d7f47177bc32841527d887e8f3127bcd
+Message: chore(deps): update dependency bitnami/kafka to v3
+Files Altered:
+--------------------------------------------------
+Commit SHA: 4e649697735f0cfda801582e56d65c17d212453d
+Message: chore(deps): update dependency @commitlint/cli to v16
+Files Altered:
+--------------------------------------------------
+Commit SHA: 79fa29cad3412301aeb57cdd059461b5131e97bb
+Message: Merge pull request #47 from Rocketseat/renovate/swc-cli-0.x
+
+chore(deps): update dependency @swc/cli to v0.1.57
+Files Altered:
+--------------------------------------------------
+Commit SHA: f8409f4a12f9a4fa724d56695980087f94a581e7
+Message: Merge pull request #40 from Rocketseat/renovate/nestjs-config-1.x
+
+fix(deps): update dependency @nestjs/config to v1.2.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: b6f173b2357b013eab3d1cbc9b239aadf3053eff
+Message: Merge pull request #37 from Rocketseat/renovate/eslint-config-prettier-8.x
+
+chore(deps): update dependency eslint-config-prettier to v8.5.0
+Files Altered:
+--------------------------------------------------
+Commit SHA: 878df8d53912fef9993a29a58feea36002cf1e07
+Message: Merge pull request #46 from Rocketseat/renovate/actions-setup-node-3.x
+
+chore(deps): update actions/setup-node action to v3
+Files Altered:
+--------------------------------------------------
+Commit SHA: cd3072bb0f9e92f7fa121b43c095416f37041856
+Message: Merge pull request #45 from Rocketseat/renovate/actions-checkout-3.x
+
+chore(deps): update actions/checkout action to v3
+Files Altered:
+--------------------------------------------------
+Commit SHA: 773f20b3745e81cfb23102a8d7e784ffdcf3403e
+Message: Merge pull request #43 from Rocketseat/renovate/rxjs-7.x
+
+fix(deps): update dependency rxjs to v7.5.5
+Files Altered:
+--------------------------------------------------
+Commit SHA: 64c319d092c1f0bf5c21f98a810934e7561bf101
+Message: Merge branch 'main' into renovate/nestjs-config-1.x
+Files Altered:
+--------------------------------------------------
+Commit SHA: d37dff843a4b96d70c0ed7485bdf04360049d372
+Message: Merge pull request #42 from Rocketseat/renovate/class-transformer-0.x
+
+fix(deps): update dependency class-transformer to v0.5.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 119bae95e7485831a0834c6c1f264c909c1730b3
+Message: Merge pull request #38 from Rocketseat/renovate/supertest-6.x
+
+chore(deps): update dependency supertest to v6.2.2
+Files Altered:
+--------------------------------------------------
+Commit SHA: 2b6666a006ea84b9b8c94d8e8b1fce24edb9f3a2
+Message: Merge branch 'main' into renovate/supertest-6.x
+Files Altered:
+--------------------------------------------------
+Commit SHA: ab94f057ad81f5f50c57ec26d45ffaabfa45affc
+Message: fix(deps): update dependency @nestjs/config to v1.2.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 088ade0e0163156c7b9261157f98a2bfed0624cf
+Message: chore(deps): update dependency supertest to v6.2.2
+Files Altered:
+--------------------------------------------------
+Commit SHA: 58df0307eec9cc772def4dbe2c4b57464ae5585e
+Message: chore(deps): update dependency @swc/cli to v0.1.57
+Files Altered:
+--------------------------------------------------
+Commit SHA: 281e39fe72836dc485eca446b3fc7021dd0fe61c
+Message: Merge pull request #41 from Rocketseat/renovate/nestjs-graphql-9.x
+
+fix(deps): update dependency @nestjs/graphql to v9.1.2
+Files Altered:
+--------------------------------------------------
+Commit SHA: 4e8b98f3ab39303410d330232fe29171677e48d3
+Message: Merge branch 'main' into renovate/nestjs-graphql-9.x
+Files Altered:
+--------------------------------------------------
+Commit SHA: 83c10cc0567b957c30d5d3b753d94fd758464f32
+Message: Merge pull request #44 from Rocketseat/renovate/prisma-monorepo
+
+fix(deps): update prisma monorepo to v3.11.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 914d5eeb30988a3490791be0c99adc89e6df6233
+Message: Merge branch 'main' into renovate/prisma-monorepo
+Files Altered:
+--------------------------------------------------
+Commit SHA: b26ddd3926ae5b4ab0387f1c292274a6cdcdb59b
+Message: Merge pull request #39 from Rocketseat/renovate/nest-monorepo
+
+chore(deps): update nest monorepo
+Files Altered:
+  - yarn.lock: modified (809 changes)
+--------------------------------------------------
+Commit SHA: b4e8db93aff432cebe1bfa403121855109e2cac5
+Message: chore: Decrease graceful shutdown timeout
+Files Altered:
+--------------------------------------------------
+Commit SHA: 11d561d50a4e02f21cca4c153ebd352dd182e3f2
+Message: chore: Improve logging
+Files Altered:
+--------------------------------------------------
+Commit SHA: 4cdf16c265627f173fcda52cf2698a7cf24d8405
+Message: chore: Buffer logs until logger is attached
+Files Altered:
+--------------------------------------------------
+Commit SHA: 6e6765d08b78c4f494c87d9d510b8d707fa414ec
+Message: chore(deps): update nest monorepo
+Files Altered:
+  - yarn.lock: modified (809 changes)
+--------------------------------------------------
+Commit SHA: 7619582d0f6968e90e1d0dd8ca7a5daefca6fd2d
+Message: feat: Add readiness and liveness checks
+Files Altered:
+--------------------------------------------------
+Commit SHA: 7f2ecbc251b6855c2382040c15c51310f05201dd
+Message: chore: Ignore build dir
+Files Altered:
+--------------------------------------------------
+Commit SHA: e4f09313aff7dd945eec89483e9cf6f7b4fc3034
+Message: Merge pull request #24 from Rocketseat/feat/logger
+
+feat: Add logger
+Files Altered:
+--------------------------------------------------
+Commit SHA: 920a8b759740d997e56379d49b8ba01886457771
+Message: Merge branch 'main' into feat/logger
+Files Altered:
+  - .env.testing.example: modified (2 changes)
+  - src/application/use-cases/example-use-case.spec.ts: added (18 changes)
+  - src/infra/http/graphql/resolvers/example.resolver.e2e-spec.ts: added (36 changes)
+--------------------------------------------------
+Commit SHA: ab57603d42877d2ed43aeba339998859c943262d
+Message: chore(deps): update actions/setup-node action to v3
+Files Altered:
+--------------------------------------------------
+Commit SHA: 88207cdc96367635aaa9445beb6704cdb76b964e
+Message: chore(deps): update actions/checkout action to v3
+Files Altered:
+--------------------------------------------------
+Commit SHA: 301edcf6a8d0345451fa067b46d88fe2cc7df8ad
+Message: fix(deps): update prisma monorepo to v3.11.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 35f530f8a2055c21c6ddd76c111237aecd836f61
+Message: fix(deps): update dependency rxjs to v7.5.5
+Files Altered:
+--------------------------------------------------
+Commit SHA: 307c4524a62d897cd2e33fe2fa3dde800452dfd7
+Message: fix(deps): update dependency class-transformer to v0.5.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 11a245148fb5874b1e27a052c843b730b21f6c12
+Message: fix(deps): update dependency @nestjs/graphql to v9.1.2
+Files Altered:
+--------------------------------------------------
+Commit SHA: 8d8f17380180be32c141454934c4c1d806064dbe
+Message: chore: improve pino log interceptor
+Files Altered:
+--------------------------------------------------
+Commit SHA: 2937095ec2958061924b757890a70798040ad56f
+Message: chore: upgrade pino libs
+Files Altered:
+--------------------------------------------------
+Commit SHA: 47f7db66da72235c5f354b22af6ac0c39fc9c8a5
+Message: Merge pull request #19 from Rocketseat/renovate/apollo-graphql-packages
+
+fix(deps): update dependency apollo-server-express to v3.6.7
+Files Altered:
+--------------------------------------------------
+Commit SHA: 4d4f9d96adaa4eff159ac9099c29087926aea7c1
+Message: Merge pull request #15 from Rocketseat/renovate/ts-node-10.x
+
+chore(deps): update dependency ts-node to v10.7.0
+Files Altered:
+--------------------------------------------------
+Commit SHA: ee34bc7f0c8043ff3244a9910abf15822990cab6
+Message: Merge pull request #21 from Rocketseat/renovate/graphql-15.x
+
+fix(deps): update dependency graphql to v15.8.0
+Files Altered:
+--------------------------------------------------
+Commit SHA: 5f2406878e9901e2ebe1b634cb24abc82aabf6a7
+Message: Merge branch 'main' into renovate/graphql-15.x
+Files Altered:
+--------------------------------------------------
+Commit SHA: d57f001adb2e0a2c2941eb747a264e99bc3ad704
+Message: Merge pull request #36 from Rocketseat/renovate/node-16.x
+
+chore(deps): update dependency @types/node to v16.11.26
+Files Altered:
+--------------------------------------------------
+Commit SHA: cab150a557c443f32629720ae5d229ea3a1f48bb
+Message: Merge branch 'main' into renovate/node-16.x
+Files Altered:
+--------------------------------------------------
+Commit SHA: 512eb90330dea05f98fdd9b73b5c18c456c17a51
+Message: fix(deps): update dependency graphql to v15.8.0
+Files Altered:
+--------------------------------------------------
+Commit SHA: d0ed0d1223bce7e6534baa88c01785ed76e0600a
+Message: chore(deps): update dependency ts-node to v10.7.0
+Files Altered:
+--------------------------------------------------
+Commit SHA: 30fc30f1323dc535ca0990b95a11e48004a069c4
+Message: chore(deps): update dependency eslint-config-prettier to v8.5.0
+Files Altered:
+--------------------------------------------------
+Commit SHA: e84ce36421ea986b201ea52839ab0944629c1641
+Message: Merge pull request #35 from Rocketseat/renovate/pg-8.x
+
+fix(deps): update dependency pg to v8.7.3
+Files Altered:
+--------------------------------------------------
+Commit SHA: 6fc2d6ce1df06ae7af18cdd24814eeb0d7c5f3fc
+Message: Merge branch 'main' into renovate/pg-8.x
+Files Altered:
+--------------------------------------------------
+Commit SHA: 50bdfcf6aea5e79eb6a91e123f64f912b50191a7
+Message: chore(deps): update dependency @types/node to v16.11.26
+Files Altered:
+--------------------------------------------------
+Commit SHA: 5492c746ed17c53a5caa5276ec7b8ff2cda8e0cc
+Message: Merge pull request #34 from Rocketseat/renovate/supertest-2.x
+
+chore(deps): update dependency @types/supertest to v2.0.12
+Files Altered:
+--------------------------------------------------
+Commit SHA: 8a5f977d5cb9c3d23a2c4abc5425094e606e10dc
+Message: Merge pull request #33 from Rocketseat/renovate/swc-jest-0.x
+
+chore(deps): update dependency @swc/jest to v0.2.20
+Files Altered:
+--------------------------------------------------
+Commit SHA: 3525f2831c402596e7c4287f8006e3adbd49c68e
+Message: Merge pull request #22 from Rocketseat/renovate/graphql-query-complexity-0.x
+
+fix(deps): update dependency graphql-query-complexity to v0.11.0
+Files Altered:
+--------------------------------------------------
+Commit SHA: 7e21117201411ddcaa0facb2b3b9931e48ae01c2
+Message: Merge pull request #18 from Rocketseat/renovate/typescript-eslint-monorepo
+
+chore(deps): update typescript-eslint monorepo to v4.33.0
+Files Altered:
+--------------------------------------------------
+Commit SHA: 6a8c2bd39e0dcd314c36409d9f53572fa252d1a5
+Message: Merge pull request #7 from Rocketseat/renovate/husky-7.x
+
+chore(deps): update dependency husky to v7.0.4
+Files Altered:
+--------------------------------------------------
+Commit SHA: 714734769e9cbb96c2f5b6d57e98734b95ea5838
+Message: Merge pull request #5 from Rocketseat/renovate/faker-5.x
+
+chore(deps): update dependency @types/faker to v5.5.9
+Files Altered:
+--------------------------------------------------
+Commit SHA: dcd1fe3b8a8c20a9ee0dd48573f9da5d086d2293
+Message: fix(deps): update dependency pg to v8.7.3
+Files Altered:
+--------------------------------------------------
+Commit SHA: a76b90a6a630004dc7e7b8b2d2b7a7ab4e94083f
+Message: fix(deps): update dependency graphql-query-complexity to v0.11.0
+Files Altered:
+--------------------------------------------------
+Commit SHA: 6f77d8c6fd07d057c0e842c12ee52507f8d2150c
+Message: fix(deps): update dependency apollo-server-express to v3.6.7
+Files Altered:
+--------------------------------------------------
+Commit SHA: 03694e6df89cbf58eac68984fd29c753f6505d74
+Message: chore(deps): update typescript-eslint monorepo to v4.33.0
+Files Altered:
+--------------------------------------------------
+Commit SHA: 1f37168462e27f1b383d4f37857d744a7cf833b3
+Message: chore(deps): update dependency @types/supertest to v2.0.12
+Files Altered:
+--------------------------------------------------
+Commit SHA: 5d76408830a7161c820ea21de90d9e973a88ee07
+Message: chore(deps): update dependency @swc/jest to v0.2.20
+Files Altered:
+--------------------------------------------------
+Commit SHA: 65a2ca6bd49a70d3364450603713278fe594754e
+Message: Merge pull request #20 from Rocketseat/renovate/apollo-server-plugin-base-3.x
+
+fix(deps): update dependency apollo-server-plugin-base to v3.5.2
+Files Altered:
+--------------------------------------------------
+Commit SHA: d71ab30553f1506669d4b4ee66e860ee0fa82906
+Message: Merge pull request #17 from Rocketseat/renovate/typescript-4.x
+
+chore(deps): update dependency typescript to v4.6.3
+Files Altered:
+--------------------------------------------------
+Commit SHA: 156888ab677a25a9bd16569dd5e4b1c3311ecd3b
+Message: chore(deps): update dependency husky to v7.0.4
+Files Altered:
+--------------------------------------------------
+Commit SHA: d89cf2a546174c034b5c6b0ec71f9222ccd39939
+Message: Merge branch 'main' into renovate/typescript-4.x
+Files Altered:
+--------------------------------------------------
+Commit SHA: c754bbba85f42e84a869bcd41abc476942fc0f13
+Message: chore(deps): update dependency @types/faker to v5.5.9
+Files Altered:
+--------------------------------------------------
+Commit SHA: e6615f5651026a3b671818ac596b52c90ffc989c
+Message: Merge pull request #16 from Rocketseat/renovate/tsconfig-paths-3.x
+
+chore(deps): update dependency tsconfig-paths to v3.14.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 58fb922ee04362d50f6978aa1299c604260f74d1
+Message: Merge pull request #14 from Rocketseat/renovate/eslint-plugin-import-helpers-1.x
+
+chore(deps): update dependency eslint-plugin-import-helpers to v1.2.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 4a2d14484f51fd6f8d30dae24b20af03223f7df2
+Message: Merge pull request #13 from Rocketseat/renovate/commitlint-monorepo
+
+chore(deps): update dependency @commitlint/cli to v13.2.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 87a811d7126b617b0110da02053c7ed072785ab6
+Message: Merge pull request #12 from Rocketseat/renovate/class-validator-0.x
+
+fix(deps): update dependency class-validator to v0.13.2
+Files Altered:
+--------------------------------------------------
+Commit SHA: e8c149799b5e367b7d7282896cb84e487fe2b4c1
+Message: Merge pull request #11 from Rocketseat/renovate/jest-monorepo
+
+chore(deps): update jest monorepo
+Files Altered:
+  - yarn.lock: modified (1168 changes)
+--------------------------------------------------
+Commit SHA: 6e610bfb06ee7a5d2201350f8fb48ebcd4ae00d9
+Message: Merge branch 'main' into renovate/jest-monorepo
+Files Altered:
+--------------------------------------------------
+Commit SHA: 2b2bbd2e42150ea31dc976ffb13f862d39440f6d
+Message: Merge pull request #10 from Rocketseat/renovate/ts-loader-9.x
+
+chore(deps): update dependency ts-loader to v9.2.8
+Files Altered:
+--------------------------------------------------
+Commit SHA: e875b97ad3a2fa6d7db74b1eaf038fc3c4b210cb
+Message: Merge branch 'main' into renovate/ts-loader-9.x
+Files Altered:
+--------------------------------------------------
+Commit SHA: 4210e2ed9c3377bf73557f4ef786494128066f9f
+Message: Merge pull request #9 from Rocketseat/renovate/ts-jest-27.x
+
+chore(deps): update dependency ts-jest to v27.1.4
+Files Altered:
+--------------------------------------------------
+Commit SHA: ea5c5202566d16e269534213b7db84c630c38424
+Message: Merge pull request #8 from Rocketseat/renovate/prettier-2.x
+
+chore(deps): update dependency prettier to v2.6.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 55117fec26d2f5cd19d9b735bd5ba6b97dd19a7d
+Message: Merge pull request #6 from Rocketseat/renovate/uuid-8.x
+
+chore(deps): update dependency @types/uuid to v8.3.4
+Files Altered:
+--------------------------------------------------
+Commit SHA: 4669206f4b5d692be6b073441c0525551c4a5ffb
+Message: Merge pull request #4 from Rocketseat/renovate/nestjs-schematics-8.x
+
+chore(deps): update dependency @nestjs/schematics to v8.0.8
+Files Altered:
+--------------------------------------------------
+Commit SHA: ab62397ebccc33eac084651a4fe65fe25cdac525
+Message: Merge pull request #32 from Rocketseat/chore/prisma-log
+
+chore: Change prisma log level
+Files Altered:
+--------------------------------------------------
+Commit SHA: 14798d0cf382c2af8972560ade3d382494df79be
+Message: chore: Change prisma log level
+Files Altered:
+--------------------------------------------------
+Commit SHA: 441d08c70dcc82e60b3bb8b4c104869fcfdce46e
+Message: chore(deps): update dependency prettier to v2.6.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: f288e7706f8e664e70751670d838aebf1931fa93
+Message: chore(deps): update dependency typescript to v4.6.3
+Files Altered:
+--------------------------------------------------
+Commit SHA: 6f0698d38f003bcca556df65d4129718d335c71e
+Message: chore(deps): update dependency ts-jest to v27.1.4
+Files Altered:
+--------------------------------------------------
+Commit SHA: f85b0aa49a49ce560625614a9ac568572f45d57e
+Message: chore(deps): update dependency tsconfig-paths to v3.14.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 8b2f3d6d1df806eda1b2dd47adf9b134d9852f2a
+Message: chore: Add binary targets
+Files Altered:
+--------------------------------------------------
+Commit SHA: 429ee0b042651eeddb44ff931d65fa3513d9eeac
+Message: ci: Add bin path
+Files Altered:
+--------------------------------------------------
+Commit SHA: b7c349e786a92c5b3497e08e8c90be01ac02aea0
+Message: Merge pull request #31 from Rocketseat/ci/dockerize
+
+ci: Dockerize
+Files Altered:
+--------------------------------------------------
+Commit SHA: 5a9c168749f144a132717553c44754bd60233b84
+Message: ci: Add prisma seed
+Files Altered:
+--------------------------------------------------
+Commit SHA: 0bf2338c857837360a068c1373ff2d90be618aa4
+Message: ci: Add pkg conf
+Files Altered:
+--------------------------------------------------
+Commit SHA: b4798d4f7e916c52c6a5e35b2f3102d72fdc52e3
+Message: ci: Add Dockerfile
+Files Altered:
+--------------------------------------------------
+Commit SHA: e0af31a82ee9ef51e501bac14888da1eaa321c8b
+Message: ci: Add .dockerignore
+Files Altered:
+--------------------------------------------------
+Commit SHA: e705c1064b7cac8d2ad8cd35d112f89ad8c8eaf4
+Message: Merge pull request #30 from Rocketseat/ci/ts-config
+
+ci: Change TS build config
+Files Altered:
+--------------------------------------------------
+Commit SHA: 13a60c4e6655076e7b61769bc37db09c9705eac6
+Message: ci: Exclude jest and prisma files
+Files Altered:
+--------------------------------------------------
+Commit SHA: 40b892f9e9f359d8636f9ca57dba87eea6f46cc6
+Message: ci: Rename out dir
+Files Altered:
+--------------------------------------------------
+Commit SHA: af3c739c2f5b10ed2a41071cb1e78626238621d9
+Message: fix(deps): update dependency apollo-server-plugin-base to v3.5.2
+Files Altered:
+--------------------------------------------------
+Commit SHA: 487ef2daa649d1bace2730c827c3f10d918f9f5e
+Message: chore(deps): update dependency ts-loader to v9.2.8
+Files Altered:
+--------------------------------------------------
+Commit SHA: 8237cddd93d89d5f630ce908ae6f62de9a7d046b
+Message: chore(deps): update dependency @nestjs/schematics to v8.0.8
+Files Altered:
+--------------------------------------------------
+Commit SHA: 96b0508176f3eb1819c1cbf3766d040f78f53dd4
+Message: chore(deps): update jest monorepo
+Files Altered:
+  - yarn.lock: modified (1168 changes)
+--------------------------------------------------
+Commit SHA: a50b3fe7077ebe7ac5a9c19549e6b2286c57d9ef
+Message: Merge pull request #28 from Rocketseat/feature/kafka-config
+
+feat: add kafka to e2e yml config
+Files Altered:
+--------------------------------------------------
+Commit SHA: 6a0400239a3d2cdac782c3e611ccf891e5e0abb5
+Message: feat: add kafka to e2e yml config
+Files Altered:
+--------------------------------------------------
+Commit SHA: 679b9a97bafc088c3ef4be5a36b84cd8237df456
+Message: chore(deps): update dependency @commitlint/cli to v13.2.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 3b5720956ac702ea0b881a2a073215a248a29e52
+Message: fix(deps): update dependency class-validator to v0.13.2
+Files Altered:
+--------------------------------------------------
+Commit SHA: 4b8bb3ac371da29bff189d5a991c20272e8cd774
+Message: Merge pull request #27 from Rocketseat/chore/add-datadog
+
+chore: add datadog tracing
+Files Altered:
+--------------------------------------------------
+Commit SHA: fa7c879bf947ebf677b4d1078b8f7690dd18b2e2
+Message: chore: add datadog tracing
+Files Altered:
+--------------------------------------------------
+Commit SHA: 3f8497725e4b4b9a0dbc9aba109cabaa1c2a70e9
+Message: chore(deps): update dependency eslint-plugin-import-helpers to v1.2.1
+Files Altered:
+--------------------------------------------------
+Commit SHA: 4f54af7684043bf18b18d1950665580a8a18f813
+Message: chore(deps): update dependency @types/uuid to v8.3.4
+Files Altered:
+--------------------------------------------------
+Commit SHA: 709c6dc0c016df8af6ebb58a9a080b915cf0809e
+Message: Merge pull request #23 from Rocketseat/renovate/pin-dependencies
+
+chore(deps): pin dependencies
+Files Altered:
+--------------------------------------------------
+Commit SHA: 077793f9b14dba02323e77c3908fb302cc339d6d
+Message: chore(deps): pin dependencies
+Files Altered:
+--------------------------------------------------
+Commit SHA: 475640a7f90a2f998e625f04659c551895e55afe
+Message: Merge pull request #26 from Rocketseat/tests/swc
+
+Use SWC to run tests
+Files Altered:
+  - .env.testing.example: modified (2 changes)
+--------------------------------------------------
+Commit SHA: 494f63d0ce4497b644b2c6ee242e0c457214b819
+Message: test: Use SWC to run tests
+Files Altered:
+  - .env.testing.example: modified (2 changes)
+--------------------------------------------------
+Commit SHA: 52895af4f9f051b75cba5e85b77937d4a06b2d63
+Message: Merge pull request #25 from Rocketseat/chore/fix-tests
+
+chore: create examples to run tests
+Files Altered:
+  - src/application/use-cases/example-use-case.spec.ts: added (18 changes)
+  - src/infra/http/graphql/resolvers/example.resolver.e2e-spec.ts: added (36 changes)
+--------------------------------------------------
+Commit SHA: 04ffa82528cd0776eb6a649ea095d17d6fde3bb2
+Message: chore: create examples to run tests
+Files Altered:
+  - src/application/use-cases/example-use-case.spec.ts: added (18 changes)
+  - src/infra/http/graphql/resolvers/example.resolver.e2e-spec.ts: added (36 changes)
+--------------------------------------------------
+Commit SHA: 4678840f832937bab401a99bac3c935615a355f8
+Message: feat: Add logger
+Files Altered:
+--------------------------------------------------
+Commit SHA: 6085d403db6c6a434a755364ab45cd1ed3ecd589
+Message: chore: add github actions
+Files Altered:
+--------------------------------------------------
+Commit SHA: 317247bd08a3e6cb584367a8a626e618bed1cb5a
+Message: chore: add no-console and line between rules
+Files Altered:
+--------------------------------------------------
+Commit SHA: a672950053ccae439adb4d108a0b15559d44d490
+Message: Merge pull request #2 from Rocketseat/refactor/environment-variables-strategy
+
+chore: change environment variables strategy
+Files Altered:
+  - .env.testing.example: modified (8 changes)
+--------------------------------------------------
+Commit SHA: 59b122fc62d38d3d53a575b1778d2b2c44bd0d7e
+Message: chore: change environment variables strategy
+Files Altered:
+  - .env.testing.example: modified (8 changes)
+--------------------------------------------------
+Commit SHA: 0d995d6dea82040a3573a9b0b8728c994a08cce4
+Message: chore: lint
+Files Altered:
+--------------------------------------------------
+Commit SHA: 230e779676cc85b3011062b463ed0c10e70e344c
+Message: Merge pull request #1 from Rocketseat/sync-files
+
+Add/remove some files to sync this template
+Files Altered:
+  - test/jest-e2e.config.ts: modified (2 changes)
+--------------------------------------------------
+Commit SHA: 0d20c0148bbd7c7927985e263b53b2c18bd0aa32
+Message: chore: add eslint import order plugin
+Files Altered:
+--------------------------------------------------
+Commit SHA: 1c31d42958bec021d1fe27b40af13de326b97105
+Message: chore: rename prisma test environment to .ts
+Files Altered:
+  - test/jest-e2e.config.ts: modified (2 changes)
+--------------------------------------------------
+Commit SHA: 7852035f262c3e37a949250580235cca0a3073cd
+Message: chore: add graphql query to not break the app
+Files Altered:
+--------------------------------------------------
+Commit SHA: 109bfc4122f516eec0acfef03cd932236dcfe177
+Message: chore: comment the database import to not break the app
+Files Altered:
+--------------------------------------------------
+Commit SHA: 99b0efc138df0f0e50c2745cb7c3cebffaa5a0c1
+Message: chore: clear database module
+Files Altered:
+--------------------------------------------------
+Commit SHA: ef36429cbbe21ab5a9c354eefc064650ce2d2892
+Message: chore: add .editorconfig
+Files Altered:
+--------------------------------------------------
+Commit SHA: 989df321f568bdd2ede253f18530aa07c5f9c718
+Message: chore: add .npmrc
+Files Altered:
+--------------------------------------------------
+Commit SHA: 46e35f2b63576fe67e7ad15bb503b5c36d69254d
+Message: chore: add domain error
+Files Altered:
+--------------------------------------------------
+Commit SHA: 8dab2e791600ec6ce92d3c899abc835f4d6acc03
+Message: chore: add paginated result core dto
+Files Altered:
+--------------------------------------------------
+Commit SHA: a1a7d9ef4dcf5a3a80ba06649b072b907e5dbeb9
+Message: chore: add graphql common folder
+Files Altered:
+--------------------------------------------------
+Commit SHA: 6cbd5b3f5fc5e81cdac9434e08646531f6c5a9be
+Message: docs: Create README
+Files Altered:
+--------------------------------------------------
+Commit SHA: 46e7a6b57250636f774abaa3c47639484e7c8fb1
+Message: feat: base template
+Files Altered:
+  - .env.testing.example: added (2 changes)
+  - test/jest-e2e.config.ts: added (8 changes)
+>>>>>>> Stashed changes
 --------------------------------------------------
 
 
 ====================================
      Qualitative Analysis of Commits
 ====================================
+<<<<<<< Updated upstream
 Commit SHA: 2ef33af16ebc5da9bd1b7261ee88add0ae9a835a
 Commit URL: https://github.com/nodejs/node/commit/2ef33af16ebc5da9bd1b7261ee88add0ae9a835a
 Commit Message: esm: fix support for `URL` instances in `import.meta.resolve`
@@ -6953,4 +7851,99 @@ Related to Tests: Yes
 Objective: No specific test objective identified
 Files Altered:
   - test/parallel/parallel.status: modified (2 changes)
+=======
+Commit SHA: 94601c9cde6a58cd92d91968cc2841061f98a318
+Commit URL: https://github.com/Rocketseat/backend-template/commit/94601c9cde6a58cd92d91968cc2841061f98a318
+Commit Message: Merge pull request #83 from Rocketseat/chore/docker-compose-environment-variables
+
+chore: set environment variables
+Related to Tests: No
+Objective: No test files involved
+Files Altered:
+--------------------------------------------------
+Commit SHA: f9fcca04ec2bf5cc8396bb8088cfdaeb8086dcdc
+Commit URL: https://github.com/Rocketseat/backend-template/commit/f9fcca04ec2bf5cc8396bb8088cfdaeb8086dcdc
+Commit Message: chore: set environment variables
+Related to Tests: No
+Objective: No test files involved
+Files Altered:
+--------------------------------------------------
+Commit SHA: fbaa9f0690994543e82fd9a4ead5342132db1066
+Commit URL: https://github.com/Rocketseat/backend-template/commit/fbaa9f0690994543e82fd9a4ead5342132db1066
+Commit Message: Merge pull request #82 from Rocketseat/chore/change-db-provider
+
+chore: change db provider
+Related to Tests: Yes
+Objective: No specific test objective identified
+Files Altered:
+  - .env.testing.example: modified (6 changes)
+  - src/application/use-cases/example-use-case.spec.ts: removed (18 changes)
+  - src/application/use-cases/user/get-user-by-email.use-case.spec.ts: added (50 changes)
+  - src/domain/value-objects/email.ts: added (27 changes)
+  - src/infra/http/graphql/resolvers/example.resolver.e2e-spec.ts: removed (36 changes)
+  - src/infra/http/graphql/resolvers/user.resolver.e2e-spec.ts: added (57 changes)
+  - test/factories/users.factory.ts: added (48 changes)
+  - test/repositories/in-memory-users.repository.ts: added (25 changes)
+--------------------------------------------------
+Commit SHA: 9c91aa17cbcb351d352e58dd82a6564e2fb40deb
+Commit URL: https://github.com/Rocketseat/backend-template/commit/9c91aa17cbcb351d352e58dd82a6564e2fb40deb
+Commit Message: chore: improves example codes
+Related to Tests: Yes
+Objective: No specific test objective identified
+Files Altered:
+  - src/application/use-cases/example-use-case.spec.ts: removed (18 changes)
+  - src/application/use-cases/user/get-user-by-email.use-case.spec.ts: added (50 changes)
+  - src/domain/value-objects/email.ts: added (27 changes)
+  - src/infra/http/graphql/resolvers/example.resolver.e2e-spec.ts: removed (36 changes)
+  - src/infra/http/graphql/resolvers/user.resolver.e2e-spec.ts: added (57 changes)
+  - test/factories/users.factory.ts: added (48 changes)
+  - test/repositories/in-memory-users.repository.ts: added (25 changes)
+--------------------------------------------------
+Commit SHA: b1475fcc5892cc081bce4d7cf459ce7adfc6b125
+Commit URL: https://github.com/Rocketseat/backend-template/commit/b1475fcc5892cc081bce4d7cf459ce7adfc6b125
+Commit Message: fix(ci): update `MySQL` credentials
+Related to Tests: No
+Objective: No test files involved
+Files Altered:
+--------------------------------------------------
+Commit SHA: 43dcd5665dd17c3330ba907a983b27089f50dfcc
+Commit URL: https://github.com/Rocketseat/backend-template/commit/43dcd5665dd17c3330ba907a983b27089f50dfcc
+Commit Message: chore: change database provider
+Related to Tests: Yes
+Objective: No specific test objective identified
+Files Altered:
+  - .env.testing.example: modified (6 changes)
+--------------------------------------------------
+Commit SHA: 3da8c8aab4918a9e4568aa579d6a239f1065b50a
+Commit URL: https://github.com/Rocketseat/backend-template/commit/3da8c8aab4918a9e4568aa579d6a239f1065b50a
+Commit Message: Rename vercel-deploy to vercel.json
+Related to Tests: No
+Objective: No test files involved
+Files Altered:
+--------------------------------------------------
+Commit SHA: 9bb79165a3454dc511eccb9234371083b98bcd98
+Commit URL: https://github.com/Rocketseat/backend-template/commit/9bb79165a3454dc511eccb9234371083b98bcd98
+Commit Message: Merge pull request #80 from Rocketseat/chore/base-64-utils
+
+chore: add `base64Encode` function
+Related to Tests: No
+Objective: No test files involved
+Files Altered:
+--------------------------------------------------
+Commit SHA: 86d35aaaa6bf37ca6f575665e755bab5ee7e2da6
+Commit URL: https://github.com/Rocketseat/backend-template/commit/86d35aaaa6bf37ca6f575665e755bab5ee7e2da6
+Commit Message: Merge pull request #79 from Rocketseat/fix/dotenv-config
+
+fix: setup dotenv
+Related to Tests: No
+Objective: No test files involved
+Files Altered:
+--------------------------------------------------
+Commit SHA: d5352e6478f953486da2ee7bcfe425229a5e6fe8
+Commit URL: https://github.com/Rocketseat/backend-template/commit/d5352e6478f953486da2ee7bcfe425229a5e6fe8
+Commit Message: chore: utils folder mapper
+Related to Tests: No
+Objective: No test files involved
+Files Altered:
+>>>>>>> Stashed changes
 --------------------------------------------------
