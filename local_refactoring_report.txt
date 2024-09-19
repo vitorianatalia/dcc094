@@ -1,0 +1,379 @@
+====================================
+    Refactoring Commits Report
+====================================
+
+Total Commits in Repository: 8093
+Total Refactoring Commits Detected: 29
+
+Top 10 Contributors for Refactoring Commits:
+--------------------------------------------
+ - Gary Gregory: 23 refactoring commits
+ - 徐梦旗: 3 refactoring commits
+ - Elliotte Rusty Harold: 2 refactoring commits
+ - Capt. Cutlass: 1 refactoring commits
+
+Refactoring Commits:
+---------------------
+Commit SHA: ec4f545b69571813e1792e4ff9a42ee219b57928
+Message: Refactor into constants
+
+Author: Gary Gregory
+Date: 2024-09-11 09:36:17-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/RandomStringUtils.java
+--------------------------------------------------
+Commit SHA: 6dd2addd4bdc8e59ba50d156cb17304416ed86c5
+Message: Faster StopWatchTest
+
+- These string formatting tests do not need to wait 500 millis each
+- Refactor magic number into a constant
+
+Author: Gary Gregory
+Date: 2024-09-04 11:24:57-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/time/StopWatchTest.java
+--------------------------------------------------
+Commit SHA: 45f2ceaf3c0111c731ce4cd9233803175ac16783
+Message: Refactor constant
+
+Author: Gary Gregory
+Date: 2024-09-04 11:00:48-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/time/StopWatchTest.java
+--------------------------------------------------
+Commit SHA: c95ee37dffd44b01d2b816e0d943013bc7bd866c
+Message: Feature/randomutils secure() and insecure() (#1250)
+
+* Add testLang1641()
+
+* Rename some test methods
+
+* Refactor RandomUtils and RandomStringUtils with secure() and insecure()
+instances
+Author: Gary Gregory
+Date: 2024-07-25 19:38:15-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/RandomStringUtils.java
+  - src/main/java/org/apache/commons/lang3/RandomUtils.java
+  - src/test/java/org/apache/commons/lang3/RandomStringUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/RandomUtilsTest.java
+--------------------------------------------------
+Commit SHA: 12f694873a5edf04c44631597a73cf80a55c1a29
+Message: Add AppendableJoiner and refactor string joining #1244
+Author: Gary Gregory
+Date: 2024-07-11 08:34:03-04:00
+Files Affected:
+  - src/changes/changes.xml
+--------------------------------------------------
+Commit SHA: e5aa6d0844e17362f7780cd5307dd16fd2681d6b
+Message: Refactor string joining into AppendableJoiner (#1244)
+
+
+Author: Gary Gregory
+Date: 2024-07-11 08:32:58-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/AppendableJoiner.java
+  - src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java
+  - src/test/java/org/apache/commons/lang3/AppendableJoinerTest.java
+--------------------------------------------------
+Commit SHA: f382d61a03778ccf838c6c051bd8692e4834dec2
+Message: Reimplement RandomStringUtils on top of SecureRandom#getInstanceStrong() (#1235)
+
+* Reimplement RandomStringUtils on top of SecureRandom#getInstanceStrong()
+
+The previous implementation used  ThreadLocalRandom#current()
+
+* Performance optimizations for RandomStringUtils
+
+This commit improves the performance of RandomStringUtils:
+
+* Reduces the number of random bytes generated and the number of calls to the random number generator, by using a cache system `AmortizedRandomBits`.
+* Optimizes the case of alphanumerical strings, reducing the number of rejections in the rejection sampling.
+
+See comments in code for details.
+
+* Code style and comment improvements
+
+* Fix 2 checkstyle errors.
+* Apply suggestions from review for garydgregory/commons-lang#2
+* Improve comments in new (non-public) class `AmortizedRandomBits` to match comments in other classes.
+
+* Make class final
+
+- Rename package-private class
+- Whitespace
+- Add null check
+- Add serialVersionUID
+- Remove redunant type cast
+- Throw IllegalStateException, not RuntimeException
+- nextBytes() should throw NullPointerException per contract
+- Javadoc: Use longer lines
+
+* Apply comments by aherbert in
+https://github.com/apache/commons-lang/commit/55a70c84f3658fd3ad3de72649b511ff21dc7175#r143834333
+
+---------
+
+Co-authored-by: Gary Gregory <gardgregory@gmail.com>
+Co-authored-by: Fabrice Benhamouda <yfabrice@amazon.com>
+Author: Gary Gregory
+Date: 2024-07-06 09:25:20-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/CachedRandomBits.java
+  - src/main/java/org/apache/commons/lang3/RandomStringUtils.java
+  - src/test/java/org/apache/commons/lang3/CachedRandomBitsTest.java
+  - src/test/java/org/apache/commons/lang3/RandomStringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 6ff74418edb3aa8475daa2e27b9a0e29bfbd97a7
+Message: Refactor magic numbers
+
+Author: Gary Gregory
+Date: 2024-05-25 09:32:04-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java
+--------------------------------------------------
+Commit SHA: c8f5b0c0018b62a17e3acc3b704fd2b5bbecdd26
+Message: Refactor AbstractConcurrentInitializerTest to add non-Object test
+Author: Gary Gregory
+Date: 2024-05-23 09:58:53-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/concurrent/AbstractConcurrentInitializerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/AtomicInitializerNonObjectTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/AtomicInitializerObjectTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/AtomicInitializerTest.java
+--------------------------------------------------
+Commit SHA: b7b52fc506ca531ce97c936b4b6d70f72a1125d3
+Message: Internal refactoring
+
+Author: Gary Gregory
+Date: 2024-05-12 15:42:37-04:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/ObjectUtils.java
+  - src/test/java/org/apache/commons/lang3/ObjectUtilsTest.java
+--------------------------------------------------
+Commit SHA: 966fbf05e2afa54cc42ad9e558e301da255dbb18
+Message: Internal refactoring to move version splitting to JavaVersion
+
+Author: Gary Gregory
+Date: 2024-05-02 15:39:52-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/JavaVersion.java
+  - src/main/java/org/apache/commons/lang3/SystemUtils.java
+--------------------------------------------------
+Commit SHA: bd6a8c422731f93dde59f238dbb81aac7545010e
+Message: Refactor magic string into an private constant
+
+Author: Gary Gregory
+Date: 2024-04-24 19:13:43-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/SystemUtils.java
+--------------------------------------------------
+Commit SHA: bdff802a85306ac8246a80876c0a44baec57ff10
+Message: [LANG-1729] NumberUtils.isParsable() returns true for Fullwidth Unicode
+digits
+
+Refactor tests
+
+Author: Gary Gregory
+Date: 2024-04-24 16:51:21-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+--------------------------------------------------
+Commit SHA: af8575dd25bf99bb25e9ad424c0839e27d1ff608
+Message: Test refactoring
+
+Author: Gary Gregory
+Date: 2024-04-24 16:00:25-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+--------------------------------------------------
+Commit SHA: 55537206c1d8ce2341eff59da93a74f78570c8b5
+Message: remove TODO from deprecated class we're not going to refactor (#1173)
+
+
+Author: Elliotte Rusty Harold
+Date: 2024-02-11 09:18:57-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringEscapeUtils.java
+--------------------------------------------------
+Commit SHA: 84b475ae4983ced77e868c0467a52f217f8bcc8e
+Message: Address minor redundancies after code inspection (#1148)
+
+* refactor: remove redundant string conversion
+
+* refactor: remove unused assignments (minor)
+
+* refactor: remove unused assignments (major)
+
+Keeping this "bulky" cleanup as a separate commit for review convenience (can be squashed afterward).
+
+* refactor: address feedback
+
+* refactor: split testIsAssignable by groups
+
+* refactor: remove unnecessary boxing
+
+* refactor: extract null-locale case into separate test
+
+* refactor: use named fields for generic types
+
+* refactor: more specific checked exception in method declaration
+
+* refactor: remove pseudo-comment variables
+
+* refactor: revert remove unnecessary boxing
+Author: Capt. Cutlass
+Date: 2024-01-24 22:10:17-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/main/java/org/apache/commons/lang3/concurrent/ConstantInitializer.java
+  - src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java
+  - src/test/java/org/apache/commons/lang3/CharSequenceUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/RandomStringUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/RangeTest.java
+  - src/test/java/org/apache/commons/lang3/StringEscapeUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/builder/JsonToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ExceptionUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/function/MethodFixtures.java
+  - src/test/java/org/apache/commons/lang3/math/FractionTest.java
+  - src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/TypeUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/testbed/GenericTypeHolder.java
+  - src/test/java/org/apache/commons/lang3/text/ExtendedMessageFormatTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrBuilderAppendInsertTest.java
+  - src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParserSDFTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParser_TimeZoneStrategyTest.java
+  - src/test/java/org/apache/commons/lang3/util/FluentBitSetTest.java
+--------------------------------------------------
+Commit SHA: bddf9a30941a266476ef88903f634c8d26c0a14f
+Message: inline method (#1154)
+
+
+Author: Elliotte Rusty Harold
+Date: 2024-01-10 14:40:50+00:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/AbstractLangTest.java
+--------------------------------------------------
+Commit SHA: faa1a1eea544dbdf5c2fa88c622e6e3eedd09837
+Message: Internal refactoring
+
+Use lambdas instead of anonymous inner classes
+
+Author: Gary Gregory
+Date: 2023-12-11 12:46:19-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/builder/Diff.java
+  - src/main/java/org/apache/commons/lang3/builder/DiffBuilder.java
+  - src/test/java/org/apache/commons/lang3/builder/DiffBuilderTest.java
+--------------------------------------------------
+Commit SHA: b1b409ae4096664a33787bf52be32d9d2eb0cb31
+Message: [LANG-1724] Customise text pattern in DiffResult#toString()
+
+Internal refactoring toward solution
+
+Author: Gary Gregory
+Date: 2023-12-11 09:26:14-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/builder/DiffBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/DiffResult.java
+  - src/test/java/org/apache/commons/lang3/builder/DiffResultTest.java
+--------------------------------------------------
+Commit SHA: 426ebb13ee04af4f7d7efcb6338e86b3a4ccca98
+Message: Proper Javadoc list
+
+Internal refactoring
+
+Author: Gary Gregory
+Date: 2023-10-20 14:18:26-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/StopWatch.java
+--------------------------------------------------
+Commit SHA: 11d2deca1f53f43a1b0806dfbe6fdadbe96f275d
+Message: Refactor variable ConcurrentInitializer implementations to remove
+duplication of initialize() method
+
+Author: Gary Gregory
+Date: 2023-10-12 14:04:34-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/concurrent/AbstractConcurrentInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/AtomicInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/AtomicSafeInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/BackgroundInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/LazyInitializer.java
+--------------------------------------------------
+Commit SHA: 20db14299a82b2f11f4aa32e218858086de68217
+Message: Comments and refactor array access
+Author: Gary Gregory
+Date: 2023-08-10 20:35:30-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+--------------------------------------------------
+Commit SHA: 2d686609c102014166c659f63fbf5211f02308c5
+Message: Rename variable names from 'clss' to 'clazz' #1087
+Author: Gary Gregory
+Date: 2023-07-28 13:41:22-04:00
+Files Affected:
+  - src/changes/changes.xml
+--------------------------------------------------
+Commit SHA: e2087446516e903150df2c45eec2231dacd9f0c2
+Message: Refactor rename the variable name from 'clss' to 'clazz' (#1087)
+
+
+Author: 徐梦旗
+Date: 2023-07-29 01:39:07+08:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ArrayUtils.java
+--------------------------------------------------
+Commit SHA: 67c6450b6179e027ff253cec31b6ebec882acfba
+Message: Refactor rename variable "hex_prefixes" to "hexPrefixes" (#1059)
+
+
+Author: 徐梦旗
+Date: 2023-04-20 21:00:51+08:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+--------------------------------------------------
+Commit SHA: c6b68f43d58f1712d254ea2639a3fe3203c5365b
+Message: refactor: Only use static imports to import assert methods in tests (#1052)
+
+
+Author: 徐梦旗
+Date: 2023-04-17 20:56:10+08:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/AnnotationUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/text/FormattableUtilsTest.java
+--------------------------------------------------
+Commit SHA: 944d6e10a47d1f662b7bda5fd712dfb5440a36cf
+Message: Refactor and add RegExUtils.dotAll() and dotAllMatcher()
+
+Author: Gary Gregory
+Date: 2023-04-01 11:40:07-04:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/RegExUtils.java
+  - src/test/java/org/apache/commons/lang3/RegExUtilsTest.java
+--------------------------------------------------
+Commit SHA: 47a92f98791e61f895c759f7e4800e16f956f766
+Message: Refactor system property access into a new SystemProperties class
+
+Author: Gary Gregory
+Date: 2023-02-11 10:31:21-05:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/SystemPropertiesTest.java
+--------------------------------------------------
+Commit SHA: 95a0e2b09bc4a3a363e5ab1c853d002fb74ad7af
+Message: Refactor system property access into a new SystemProperties class
+
+Author: Gary Gregory
+Date: 2023-02-11 09:49:41-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ArchUtils.java
+  - src/main/java/org/apache/commons/lang3/SystemProperties.java
+  - src/main/java/org/apache/commons/lang3/SystemUtils.java
+  - src/main/java/org/apache/commons/lang3/text/StrLookup.java
+  - src/test/java/org/apache/commons/lang3/SystemPropertiesTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrLookupTest.java
+--------------------------------------------------

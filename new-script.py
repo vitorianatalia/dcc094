@@ -1,24 +1,9 @@
-import os
 import re
-import sys
-import time
+from git import Repo
 from collections import defaultdict
-from github import Github
-from dotenv import load_dotenv
-from github.GithubException import RateLimitExceededException
-
-# Load environment variables
-load_dotenv()
-access_token = os.getenv('ACCESS_TOKEN')
-
-# Initialize GitHub client
-g = Github(access_token)
 
 # Configuration
-max_files_to_check = 5000  
-max_depth = 6  
-max_commits_to_process = 200  
-qualitative_commits_count = 10  # Number of commits for qualitative analysis
+max_commits_to_process = 200
 
 def get_refactoring_keywords():
     """Returns a list of keywords related to refactoring."""
@@ -52,38 +37,8 @@ def get_refactoring_keywords():
         r'\binvert condition\b', r'\bmerge conditional\b', r'\bmerge catch\b', r'\bmerge method\b', 
         r'\bsplit method\b', r'\bmove code\b', r'\breplace anonymous with class\b', r'\bparameterize test\b', 
         r'\bassert throws\b', r'\breplace generic with diamond\b', r'\btry with resources\b', 
-        r'\breplace conditional with ternary\b'
+        r'\breplace conditional with ternary\b',r'\brefactor', r'\brefactoring', r'polishing', r'polish'
     ]
-
-def check_commit_for_refactoring(commit_sha, repo):
-    """Check if a specific commit contains refactoring-related changes."""
-    retries = 3
-    for attempt in range(retries):
-        try:
-            commit = repo.get_commit(commit_sha)
-            break
-        except RateLimitExceededException:
-            print(f"Rate limit exceeded. Retrying in 60 seconds... ({attempt + 1}/{retries})")
-            time.sleep(60)
-        except Exception as e:
-            print(f"Error fetching commit {commit_sha}: {e}")
-            return None
-    else:
-        print(f"Failed to fetch commit {commit_sha} after {retries} attempts.")
-        return None
-
-    commit_message = commit.commit.message.lower()
-    if contains_refactoring_keywords(commit_message):
-        return {
-            'commit_sha': commit_sha,
-            'message': commit.commit.message,
-            'author': commit.commit.author.name or "Unknown",
-            'date': commit.commit.author.date,
-            'files': [file.filename for file in commit.files],
-            'refactoring_detected': True
-        }
-
-    return None
 
 def contains_refactoring_keywords(message):
     """Check if a commit message contains refactoring-related keywords."""
@@ -93,30 +48,29 @@ def contains_refactoring_keywords(message):
 def process_commits_for_refactoring(repo, max_commits_to_process):
     """Process a number of commits and identify refactorings."""
     commit_refactorings = []
-    commits = repo.get_commits()
-    total_commits = commits.totalCount
+    commits = list(repo.iter_commits())
+    total_commits = len(commits)
 
     analyzed_commits = 0
     author_refactoring_count = defaultdict(int)
 
-    for commit in commits:
-        if analyzed_commits >= max_commits_to_process:
-            break
-
-        commit_sha = commit.sha
-        refactoring_details = check_commit_for_refactoring(commit_sha, repo)
-
-        if refactoring_details:
+    for commit in commits[:max_commits_to_process]:
+        commit_message = commit.message.lower()
+        if contains_refactoring_keywords(commit_message):
+            refactoring_details = {
+                'commit_sha': commit.hexsha,
+                'message': commit.message,
+                'author': commit.author.name,
+                'date': commit.authored_datetime,
+                'files': [file for file in commit.stats.files.keys()],
+                'refactoring_detected': True
+            }
             commit_refactorings.append(refactoring_details)
-            author_refactoring_count[refactoring_details['author']] += 1
+            author_refactoring_count[commit.author.name] += 1
 
         analyzed_commits += 1
         progress = (analyzed_commits / max_commits_to_process) * 100
         print(f"\rCommit analysis progress: {progress:.2f}%", end="")
-
-        if analyzed_commits % 100 == 0:
-            print("\nPausing for 10 seconds to avoid API rate limits...")
-            time.sleep(10)
 
     print()  # Ensure progress line is cleared
 
@@ -126,7 +80,7 @@ def process_commits_for_refactoring(repo, max_commits_to_process):
 
 def generate_refactoring_report(commit_refactorings, total_commits, top_refactoring_authors, output_file):
     """Generate a summary report of refactorings."""
-    with open(output_file, 'w') as file:
+    with open(output_file, 'w', encoding='utf-8') as file:
         file.write("====================================\n")
         file.write("    Refactoring Commits Report\n")
         file.write("====================================\n")
@@ -152,10 +106,10 @@ def generate_refactoring_report(commit_refactorings, total_commits, top_refactor
             file.write("--------------------------------------------------\n")
 
 def main():
-    repo_name = input("Enter the repository name (e.g., 'user/repo'): ")
-    output_file = "refactoring_report.txt"
+    repo_path = input("Enter the path to the local Git repository: ")
+    output_file = "local_refactoring_report.txt"
 
-    repo = g.get_repo(repo_name)
+    repo = Repo(repo_path)
 
     print("Processing commits for refactorings... this might take some time.")
     commit_refactorings, total_commits, top_refactoring_authors = process_commits_for_refactoring(repo, max_commits_to_process)
@@ -166,6 +120,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# Close the GitHub client
-g.close()
