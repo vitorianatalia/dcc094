@@ -3,7 +3,7 @@ from git import Repo
 from collections import defaultdict
 
 # Configuration
-max_commits_to_process = 200
+max_commits_to_process = 8093
 
 def get_refactoring_keywords():
     """Returns a list of keywords related to refactoring."""
@@ -37,7 +37,7 @@ def get_refactoring_keywords():
         r'\binvert condition\b', r'\bmerge conditional\b', r'\bmerge catch\b', r'\bmerge method\b', 
         r'\bsplit method\b', r'\bmove code\b', r'\breplace anonymous with class\b', r'\bparameterize test\b', 
         r'\bassert throws\b', r'\breplace generic with diamond\b', r'\btry with resources\b', 
-        r'\breplace conditional with ternary\b',r'\brefactor', r'\brefactoring', r'polishing', r'polish'
+        r'\breplace conditional with ternary\b',r'\brefactor', r'\brefactoring', r'\bpolishing', r'\bpolish', r'\breplace'
     ]
 
 def contains_refactoring_keywords(message):
