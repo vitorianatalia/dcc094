@@ -1,0 +1,3945 @@
+====================================
+    Refactoring Commits Report
+====================================
+
+Total Commits in Repository: 8093
+Total Refactoring Commits Detected: 256
+
+Top 10 Contributors for Refactoring Commits:
+--------------------------------------------
+ - Gary Gregory: 68 refactoring commits
+ - Gary D. Gregory: 33 refactoring commits
+ - Henri Yandell: 23 refactoring commits
+ - Allon Mureinik: 17 refactoring commits
+ - Stephen Colebourne: 17 refactoring commits
+ - pascalschumacher: 13 refactoring commits
+ - Benedikt Ritter: 9 refactoring commits
+ - Sebastian Bazley: 7 refactoring commits
+ - Steven Caswell: 6 refactoring commits
+ - Peter Verhas: 5 refactoring commits
+
+Refactoring Commits:
+---------------------
+Commit SHA: ec4f545b69571813e1792e4ff9a42ee219b57928
+Message: Refactor into constants
+
+Author: Gary Gregory
+Date: 2024-09-11 09:36:17-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/RandomStringUtils.java
+--------------------------------------------------
+Commit SHA: fd866a9c2d6c69f9f6462a5e498b58293597d611
+Message: Fix handling of non-ASCII letters & numbers in RandomStringUtils (#1273)
+
+An optimization introduced in commit
+f382d61a03778ccf838c6c051bd8692e4834dec2
+incorrectly assumed that letters and numbers/digits are ASCII.
+
+For example, `RandomStringUtils.random(1, 0x4e00, 0x4e01, true, false)`
+would take too long to terminate and would not output the correct
+answer, that is the string with a single character `0x4e00`.
+The issue is that `end` would be replaced by `'z' + 1 = 123` (the latest
+ASCII letter + 1) there: https://github.com/apache/commons-lang/blob/f382d61a03778ccf838c6c051bd8692e4834dec2/src/main/java/org/apache/commons/lang3/RandomStringUtils.java#L266-L270
+ Thus, we would have `end < start` and `gap = end - start < 0`.
+
+This PR fixes this issue by restricting the optimization to cases
+where only ASCII characters are requested, that is `end < 0x7f`.
+This PR also slightly clarifies the code, using constant variables
+instead of '0', '9', 'A', and 'z'.
+
+The PR also includes two regression tests.
+
+Co-authored-by: Fabrice Benhamouda <yfabrice@amazon.com>
+Author: Fabrice Benhamouda
+Date: 2024-09-10 20:47:24-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/RandomStringUtils.java
+  - src/test/java/org/apache/commons/lang3/RandomStringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 43d225464e7187b8b6f3d0646302e11cb40be199
+Message: Faster StopWatchTest.testSuspend()
+
+- Replace Matcher calls with sane assertTrue()
+- Use variable names in assertion messages to match the source
+
+Author: Gary Gregory
+Date: 2024-09-04 12:37:08-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/time/StopWatchTest.java
+--------------------------------------------------
+Commit SHA: a905cc53439c18473101b8cdd8f0ce87ce9a8537
+Message: Faster StopWatchTest.testStopTimeSimple()
+
+- Replace Matcher calls with sane assertTrue()
+
+Author: Gary Gregory
+Date: 2024-09-04 11:33:58-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/time/StopWatchTest.java
+--------------------------------------------------
+Commit SHA: b4e4c40af1672717e687e74db70daf71e035f9b3
+Message: Faster StopWatchTest.testStopInstantSimple()
+
+- Replace Matcher calls with sane assertTrue()
+
+Author: Gary Gregory
+Date: 2024-09-04 11:32:53-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/time/StopWatchTest.java
+--------------------------------------------------
+Commit SHA: 6dd2addd4bdc8e59ba50d156cb17304416ed86c5
+Message: Faster StopWatchTest
+
+- These string formatting tests do not need to wait 500 millis each
+- Refactor magic number into a constant
+
+Author: Gary Gregory
+Date: 2024-09-04 11:24:57-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/time/StopWatchTest.java
+--------------------------------------------------
+Commit SHA: 45f2ceaf3c0111c731ce4cd9233803175ac16783
+Message: Refactor constant
+
+Author: Gary Gregory
+Date: 2024-09-04 11:00:48-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/time/StopWatchTest.java
+--------------------------------------------------
+Commit SHA: c95ee37dffd44b01d2b816e0d943013bc7bd866c
+Message: Feature/randomutils secure() and insecure() (#1250)
+
+* Add testLang1641()
+
+* Rename some test methods
+
+* Refactor RandomUtils and RandomStringUtils with secure() and insecure()
+instances
+Author: Gary Gregory
+Date: 2024-07-25 19:38:15-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/RandomStringUtils.java
+  - src/main/java/org/apache/commons/lang3/RandomUtils.java
+  - src/test/java/org/apache/commons/lang3/RandomStringUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/RandomUtilsTest.java
+--------------------------------------------------
+Commit SHA: 12f694873a5edf04c44631597a73cf80a55c1a29
+Message: Add AppendableJoiner and refactor string joining #1244
+Author: Gary Gregory
+Date: 2024-07-11 08:34:03-04:00
+Files Affected:
+  - src/changes/changes.xml
+--------------------------------------------------
+Commit SHA: e5aa6d0844e17362f7780cd5307dd16fd2681d6b
+Message: Refactor string joining into AppendableJoiner (#1244)
+
+
+Author: Gary Gregory
+Date: 2024-07-11 08:32:58-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/AppendableJoiner.java
+  - src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java
+  - src/test/java/org/apache/commons/lang3/AppendableJoinerTest.java
+--------------------------------------------------
+Commit SHA: f382d61a03778ccf838c6c051bd8692e4834dec2
+Message: Reimplement RandomStringUtils on top of SecureRandom#getInstanceStrong() (#1235)
+
+* Reimplement RandomStringUtils on top of SecureRandom#getInstanceStrong()
+
+The previous implementation used  ThreadLocalRandom#current()
+
+* Performance optimizations for RandomStringUtils
+
+This commit improves the performance of RandomStringUtils:
+
+* Reduces the number of random bytes generated and the number of calls to the random number generator, by using a cache system `AmortizedRandomBits`.
+* Optimizes the case of alphanumerical strings, reducing the number of rejections in the rejection sampling.
+
+See comments in code for details.
+
+* Code style and comment improvements
+
+* Fix 2 checkstyle errors.
+* Apply suggestions from review for garydgregory/commons-lang#2
+* Improve comments in new (non-public) class `AmortizedRandomBits` to match comments in other classes.
+
+* Make class final
+
+- Rename package-private class
+- Whitespace
+- Add null check
+- Add serialVersionUID
+- Remove redunant type cast
+- Throw IllegalStateException, not RuntimeException
+- nextBytes() should throw NullPointerException per contract
+- Javadoc: Use longer lines
+
+* Apply comments by aherbert in
+https://github.com/apache/commons-lang/commit/55a70c84f3658fd3ad3de72649b511ff21dc7175#r143834333
+
+---------
+
+Co-authored-by: Gary Gregory <gardgregory@gmail.com>
+Co-authored-by: Fabrice Benhamouda <yfabrice@amazon.com>
+Author: Gary Gregory
+Date: 2024-07-06 09:25:20-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/CachedRandomBits.java
+  - src/main/java/org/apache/commons/lang3/RandomStringUtils.java
+  - src/test/java/org/apache/commons/lang3/CachedRandomBitsTest.java
+  - src/test/java/org/apache/commons/lang3/RandomStringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 6ff74418edb3aa8475daa2e27b9a0e29bfbd97a7
+Message: Refactor magic numbers
+
+Author: Gary Gregory
+Date: 2024-05-25 09:32:04-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java
+--------------------------------------------------
+Commit SHA: c8f5b0c0018b62a17e3acc3b704fd2b5bbecdd26
+Message: Refactor AbstractConcurrentInitializerTest to add non-Object test
+Author: Gary Gregory
+Date: 2024-05-23 09:58:53-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/concurrent/AbstractConcurrentInitializerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/AtomicInitializerNonObjectTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/AtomicInitializerObjectTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/AtomicInitializerTest.java
+--------------------------------------------------
+Commit SHA: b7b52fc506ca531ce97c936b4b6d70f72a1125d3
+Message: Internal refactoring
+
+Author: Gary Gregory
+Date: 2024-05-12 15:42:37-04:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/ObjectUtils.java
+  - src/test/java/org/apache/commons/lang3/ObjectUtilsTest.java
+--------------------------------------------------
+Commit SHA: 966fbf05e2afa54cc42ad9e558e301da255dbb18
+Message: Internal refactoring to move version splitting to JavaVersion
+
+Author: Gary Gregory
+Date: 2024-05-02 15:39:52-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/JavaVersion.java
+  - src/main/java/org/apache/commons/lang3/SystemUtils.java
+--------------------------------------------------
+Commit SHA: bd6a8c422731f93dde59f238dbb81aac7545010e
+Message: Refactor magic string into an private constant
+
+Author: Gary Gregory
+Date: 2024-04-24 19:13:43-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/SystemUtils.java
+--------------------------------------------------
+Commit SHA: bdff802a85306ac8246a80876c0a44baec57ff10
+Message: [LANG-1729] NumberUtils.isParsable() returns true for Fullwidth Unicode
+digits
+
+Refactor tests
+
+Author: Gary Gregory
+Date: 2024-04-24 16:51:21-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+--------------------------------------------------
+Commit SHA: af8575dd25bf99bb25e9ad424c0839e27d1ff608
+Message: Test refactoring
+
+Author: Gary Gregory
+Date: 2024-04-24 16:00:25-04:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+--------------------------------------------------
+Commit SHA: cc625debde8ad6e4e3d74863a29b59c4e40489e6
+Message: Fix Java version in README (#1170)
+
+* Set GitHub repository for SCM URL
+
+* Replace Java 12 with 17 in README
+
+* Replace Java 12 with 17 in pom.xml
+
+* Fix SCM URL
+
+* Update pom.xml
+
+---------
+
+Co-authored-by: Gary Gregory <garydgregory@users.noreply.github.com>
+Author: Philipp Trulson
+Date: 2024-03-09 19:57:09+01:00
+Files Affected:
+  - README.md
+  - pom.xml
+--------------------------------------------------
+Commit SHA: 55537206c1d8ce2341eff59da93a74f78570c8b5
+Message: remove TODO from deprecated class we're not going to refactor (#1173)
+
+
+Author: Elliotte Rusty Harold
+Date: 2024-02-11 09:18:57-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringEscapeUtils.java
+--------------------------------------------------
+Commit SHA: 84b475ae4983ced77e868c0467a52f217f8bcc8e
+Message: Address minor redundancies after code inspection (#1148)
+
+* refactor: remove redundant string conversion
+
+* refactor: remove unused assignments (minor)
+
+* refactor: remove unused assignments (major)
+
+Keeping this "bulky" cleanup as a separate commit for review convenience (can be squashed afterward).
+
+* refactor: address feedback
+
+* refactor: split testIsAssignable by groups
+
+* refactor: remove unnecessary boxing
+
+* refactor: extract null-locale case into separate test
+
+* refactor: use named fields for generic types
+
+* refactor: more specific checked exception in method declaration
+
+* refactor: remove pseudo-comment variables
+
+* refactor: revert remove unnecessary boxing
+Author: Capt. Cutlass
+Date: 2024-01-24 22:10:17-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/main/java/org/apache/commons/lang3/concurrent/ConstantInitializer.java
+  - src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java
+  - src/test/java/org/apache/commons/lang3/CharSequenceUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/RandomStringUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/RangeTest.java
+  - src/test/java/org/apache/commons/lang3/StringEscapeUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/builder/JsonToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ExceptionUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/function/MethodFixtures.java
+  - src/test/java/org/apache/commons/lang3/math/FractionTest.java
+  - src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/TypeUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/testbed/GenericTypeHolder.java
+  - src/test/java/org/apache/commons/lang3/text/ExtendedMessageFormatTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrBuilderAppendInsertTest.java
+  - src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParserSDFTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParser_TimeZoneStrategyTest.java
+  - src/test/java/org/apache/commons/lang3/util/FluentBitSetTest.java
+--------------------------------------------------
+Commit SHA: bddf9a30941a266476ef88903f634c8d26c0a14f
+Message: inline method (#1154)
+
+
+Author: Elliotte Rusty Harold
+Date: 2024-01-10 14:40:50+00:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/AbstractLangTest.java
+--------------------------------------------------
+Commit SHA: faa1a1eea544dbdf5c2fa88c622e6e3eedd09837
+Message: Internal refactoring
+
+Use lambdas instead of anonymous inner classes
+
+Author: Gary Gregory
+Date: 2023-12-11 12:46:19-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/builder/Diff.java
+  - src/main/java/org/apache/commons/lang3/builder/DiffBuilder.java
+  - src/test/java/org/apache/commons/lang3/builder/DiffBuilderTest.java
+--------------------------------------------------
+Commit SHA: b1b409ae4096664a33787bf52be32d9d2eb0cb31
+Message: [LANG-1724] Customise text pattern in DiffResult#toString()
+
+Internal refactoring toward solution
+
+Author: Gary Gregory
+Date: 2023-12-11 09:26:14-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/builder/DiffBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/DiffResult.java
+  - src/test/java/org/apache/commons/lang3/builder/DiffResultTest.java
+--------------------------------------------------
+Commit SHA: 426ebb13ee04af4f7d7efcb6338e86b3a4ccca98
+Message: Proper Javadoc list
+
+Internal refactoring
+
+Author: Gary Gregory
+Date: 2023-10-20 14:18:26-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/StopWatch.java
+--------------------------------------------------
+Commit SHA: 11d2deca1f53f43a1b0806dfbe6fdadbe96f275d
+Message: Refactor variable ConcurrentInitializer implementations to remove
+duplication of initialize() method
+
+Author: Gary Gregory
+Date: 2023-10-12 14:04:34-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/concurrent/AbstractConcurrentInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/AtomicInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/AtomicSafeInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/BackgroundInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/LazyInitializer.java
+--------------------------------------------------
+Commit SHA: 20db14299a82b2f11f4aa32e218858086de68217
+Message: Comments and refactor array access
+Author: Gary Gregory
+Date: 2023-08-10 20:35:30-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+--------------------------------------------------
+Commit SHA: 2d686609c102014166c659f63fbf5211f02308c5
+Message: Rename variable names from 'clss' to 'clazz' #1087
+Author: Gary Gregory
+Date: 2023-07-28 13:41:22-04:00
+Files Affected:
+  - src/changes/changes.xml
+--------------------------------------------------
+Commit SHA: e2087446516e903150df2c45eec2231dacd9f0c2
+Message: Refactor rename the variable name from 'clss' to 'clazz' (#1087)
+
+
+Author: 徐梦旗
+Date: 2023-07-29 01:39:07+08:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ArrayUtils.java
+--------------------------------------------------
+Commit SHA: 67c6450b6179e027ff253cec31b6ebec882acfba
+Message: Refactor rename variable "hex_prefixes" to "hexPrefixes" (#1059)
+
+
+Author: 徐梦旗
+Date: 2023-04-20 21:00:51+08:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+--------------------------------------------------
+Commit SHA: c6b68f43d58f1712d254ea2639a3fe3203c5365b
+Message: refactor: Only use static imports to import assert methods in tests (#1052)
+
+
+Author: 徐梦旗
+Date: 2023-04-17 20:56:10+08:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/AnnotationUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/text/FormattableUtilsTest.java
+--------------------------------------------------
+Commit SHA: 944d6e10a47d1f662b7bda5fd712dfb5440a36cf
+Message: Refactor and add RegExUtils.dotAll() and dotAllMatcher()
+
+Author: Gary Gregory
+Date: 2023-04-01 11:40:07-04:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/RegExUtils.java
+  - src/test/java/org/apache/commons/lang3/RegExUtilsTest.java
+--------------------------------------------------
+Commit SHA: 47a92f98791e61f895c759f7e4800e16f956f766
+Message: Refactor system property access into a new SystemProperties class
+
+Author: Gary Gregory
+Date: 2023-02-11 10:31:21-05:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/SystemPropertiesTest.java
+--------------------------------------------------
+Commit SHA: 95a0e2b09bc4a3a363e5ab1c853d002fb74ad7af
+Message: Refactor system property access into a new SystemProperties class
+
+Author: Gary Gregory
+Date: 2023-02-11 09:49:41-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ArchUtils.java
+  - src/main/java/org/apache/commons/lang3/SystemProperties.java
+  - src/main/java/org/apache/commons/lang3/SystemUtils.java
+  - src/main/java/org/apache/commons/lang3/text/StrLookup.java
+  - src/test/java/org/apache/commons/lang3/SystemPropertiesTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrLookupTest.java
+--------------------------------------------------
+Commit SHA: 9a52b9c7cd4bf6599510d259ee62b2effcb30bf2
+Message: Drop Clirr property since commons-parent has replaced Clirr with
+JApiCmp.
+
+Author: Gary Gregory
+Date: 2022-09-23 13:44:55-04:00
+Files Affected:
+  - pom.xml
+--------------------------------------------------
+Commit SHA: 756daad879966b8789efb859993a6a2f2720d29a
+Message: Refactor duplicate pattern
+Author: Gary Gregory
+Date: 2022-09-22 08:23:51-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/Validate.java
+--------------------------------------------------
+Commit SHA: 2f153733c7dfe33f38438be3fd3269e0c3ab7005
+Message: Rename method and fix typo. (#940)
+
+
+Author: Arturo Bernal
+Date: 2022-08-21 20:29:49+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/DurationUtils.java
+  - src/test/java/org/apache/commons/lang3/time/DurationUtilsTest.java
+--------------------------------------------------
+Commit SHA: b6df0af29746c3afb1073d628e6704a2f22cae0e
+Message: Refactor internals and use Stream
+Author: Gary Gregory
+Date: 2022-08-21 11:05:45-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/LocaleUtils.java
+--------------------------------------------------
+Commit SHA: c2960c483f00424352e9336fca4a04736e1e5777
+Message: Refactor internals and use Stream
+Author: Gary Gregory
+Date: 2022-08-21 11:05:38-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ObjectUtils.java
+--------------------------------------------------
+Commit SHA: 1311d6949a2b7487766ab3c5ba86c5b9ee84d42c
+Message: Refactor some internals
+
+Author: Gary Gregory
+Date: 2022-07-21 09:15:02-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ArrayUtils.java
+--------------------------------------------------
+Commit SHA: 46b15a2ecb05bdc281bc6109bb2db99b566d4a10
+Message: Rename method for next release.
+Author: Gary Gregory
+Date: 2022-07-15 09:35:10-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/stream/Streams.java
+  - src/test/java/org/apache/commons/lang3/stream/StreamsTest.java
+--------------------------------------------------
+Commit SHA: 5cd20a04a0d2fbd8f281196fbc797e8eec6cd6e0
+Message: Internal refactoring around private modify() method
+Author: Gary Gregory
+Date: 2022-07-05 09:49:33-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/DateUtils.java
+--------------------------------------------------
+Commit SHA: 2e71945163b08326a64b7264466069dd3a83b0de
+Message: Replace @code with @link for class references
+Author: Gary Gregory
+Date: 2022-06-19 09:30:36-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/AnnotationUtils.java
+  - src/main/java/org/apache/commons/lang3/ArrayUtils.java
+  - src/main/java/org/apache/commons/lang3/BitField.java
+  - src/main/java/org/apache/commons/lang3/BooleanUtils.java
+  - src/main/java/org/apache/commons/lang3/CharRange.java
+  - src/main/java/org/apache/commons/lang3/CharSequenceUtils.java
+  - src/main/java/org/apache/commons/lang3/CharSet.java
+  - src/main/java/org/apache/commons/lang3/CharSetUtils.java
+  - src/main/java/org/apache/commons/lang3/CharUtils.java
+  - src/main/java/org/apache/commons/lang3/ClassPathUtils.java
+  - src/main/java/org/apache/commons/lang3/ClassUtils.java
+  - src/main/java/org/apache/commons/lang3/EnumUtils.java
+  - src/main/java/org/apache/commons/lang3/Functions.java
+  - src/main/java/org/apache/commons/lang3/LocaleUtils.java
+  - src/main/java/org/apache/commons/lang3/NotImplementedException.java
+  - src/main/java/org/apache/commons/lang3/ObjectUtils.java
+  - src/main/java/org/apache/commons/lang3/RandomStringUtils.java
+  - src/main/java/org/apache/commons/lang3/RandomUtils.java
+  - src/main/java/org/apache/commons/lang3/Range.java
+  - src/main/java/org/apache/commons/lang3/RegExUtils.java
+  - src/main/java/org/apache/commons/lang3/SerializationException.java
+  - src/main/java/org/apache/commons/lang3/SerializationUtils.java
+  - src/main/java/org/apache/commons/lang3/Streams.java
+  - src/main/java/org/apache/commons/lang3/StringEscapeUtils.java
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/main/java/org/apache/commons/lang3/SystemUtils.java
+  - src/main/java/org/apache/commons/lang3/ThreadUtils.java
+  - src/main/java/org/apache/commons/lang3/Validate.java
+  - src/main/java/org/apache/commons/lang3/builder/CompareToBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/Diff.java
+  - src/main/java/org/apache/commons/lang3/builder/DiffBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/DiffResult.java
+  - src/main/java/org/apache/commons/lang3/builder/Diffable.java
+  - src/main/java/org/apache/commons/lang3/builder/EqualsBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/HashCodeBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/RecursiveToStringStyle.java
+  - src/main/java/org/apache/commons/lang3/builder/ReflectionDiffBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/ReflectionToStringBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/StandardToStringStyle.java
+  - src/main/java/org/apache/commons/lang3/builder/ToStringBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/ToStringStyle.java
+  - src/main/java/org/apache/commons/lang3/compare/ComparableUtils.java
+  - src/main/java/org/apache/commons/lang3/concurrent/AbstractCircuitBreaker.java
+  - src/main/java/org/apache/commons/lang3/concurrent/AtomicInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/AtomicSafeInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/BackgroundInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/BasicThreadFactory.java
+  - src/main/java/org/apache/commons/lang3/concurrent/CallableBackgroundInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/CircuitBreaker.java
+  - src/main/java/org/apache/commons/lang3/concurrent/CircuitBreakingException.java
+  - src/main/java/org/apache/commons/lang3/concurrent/ConcurrentException.java
+  - src/main/java/org/apache/commons/lang3/concurrent/ConcurrentInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/ConcurrentRuntimeException.java
+  - src/main/java/org/apache/commons/lang3/concurrent/ConcurrentUtils.java
+  - src/main/java/org/apache/commons/lang3/concurrent/ConstantInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/EventCountCircuitBreaker.java
+  - src/main/java/org/apache/commons/lang3/concurrent/FutureTasks.java
+  - src/main/java/org/apache/commons/lang3/concurrent/LazyInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/MultiBackgroundInitializer.java
+  - src/main/java/org/apache/commons/lang3/concurrent/ThresholdCircuitBreaker.java
+  - src/main/java/org/apache/commons/lang3/concurrent/TimedSemaphore.java
+  - src/main/java/org/apache/commons/lang3/concurrent/package-info.java
+  - src/main/java/org/apache/commons/lang3/event/EventUtils.java
+  - src/main/java/org/apache/commons/lang3/exception/ExceptionUtils.java
+  - src/main/java/org/apache/commons/lang3/exception/package-info.java
+  - src/main/java/org/apache/commons/lang3/function/BooleanConsumer.java
+  - src/main/java/org/apache/commons/lang3/function/Failable.java
+  - src/main/java/org/apache/commons/lang3/function/FailableBiConsumer.java
+  - src/main/java/org/apache/commons/lang3/function/FailableBiFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableBiPredicate.java
+  - src/main/java/org/apache/commons/lang3/function/FailableBooleanSupplier.java
+  - src/main/java/org/apache/commons/lang3/function/FailableCallable.java
+  - src/main/java/org/apache/commons/lang3/function/FailableConsumer.java
+  - src/main/java/org/apache/commons/lang3/function/FailableDoubleBinaryOperator.java
+  - src/main/java/org/apache/commons/lang3/function/FailableDoubleConsumer.java
+  - src/main/java/org/apache/commons/lang3/function/FailableDoubleFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableDoublePredicate.java
+  - src/main/java/org/apache/commons/lang3/function/FailableDoubleSupplier.java
+  - src/main/java/org/apache/commons/lang3/function/FailableDoubleToIntFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableDoubleToLongFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableDoubleUnaryOperator.java
+  - src/main/java/org/apache/commons/lang3/function/FailableFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableIntBinaryOperator.java
+  - src/main/java/org/apache/commons/lang3/function/FailableIntConsumer.java
+  - src/main/java/org/apache/commons/lang3/function/FailableIntFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableIntPredicate.java
+  - src/main/java/org/apache/commons/lang3/function/FailableIntSupplier.java
+  - src/main/java/org/apache/commons/lang3/function/FailableIntToDoubleFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableIntToLongFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableIntUnaryOperator.java
+  - src/main/java/org/apache/commons/lang3/function/FailableLongBinaryOperator.java
+  - src/main/java/org/apache/commons/lang3/function/FailableLongConsumer.java
+  - src/main/java/org/apache/commons/lang3/function/FailableLongFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableLongPredicate.java
+  - src/main/java/org/apache/commons/lang3/function/FailableLongSupplier.java
+  - src/main/java/org/apache/commons/lang3/function/FailableLongToDoubleFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableLongToIntFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableLongUnaryOperator.java
+  - src/main/java/org/apache/commons/lang3/function/FailableObjDoubleConsumer.java
+  - src/main/java/org/apache/commons/lang3/function/FailableObjIntConsumer.java
+  - src/main/java/org/apache/commons/lang3/function/FailableObjLongConsumer.java
+  - src/main/java/org/apache/commons/lang3/function/FailablePredicate.java
+  - src/main/java/org/apache/commons/lang3/function/FailableShortSupplier.java
+  - src/main/java/org/apache/commons/lang3/function/FailableSupplier.java
+  - src/main/java/org/apache/commons/lang3/function/FailableToDoubleBiFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableToDoubleFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableToIntBiFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableToIntFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableToLongBiFunction.java
+  - src/main/java/org/apache/commons/lang3/function/FailableToLongFunction.java
+  - src/main/java/org/apache/commons/lang3/function/TriConsumer.java
+  - src/main/java/org/apache/commons/lang3/math/Fraction.java
+  - src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+  - src/main/java/org/apache/commons/lang3/mutable/Mutable.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableBoolean.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableByte.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableDouble.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableFloat.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableInt.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableLong.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableObject.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableShort.java
+  - src/main/java/org/apache/commons/lang3/reflect/MethodUtils.java
+  - src/main/java/org/apache/commons/lang3/reflect/TypeLiteral.java
+  - src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java
+  - src/main/java/org/apache/commons/lang3/stream/IntStreams.java
+  - src/main/java/org/apache/commons/lang3/stream/Streams.java
+  - src/main/java/org/apache/commons/lang3/text/ExtendedMessageFormat.java
+  - src/main/java/org/apache/commons/lang3/text/FormatFactory.java
+  - src/main/java/org/apache/commons/lang3/text/FormattableUtils.java
+  - src/main/java/org/apache/commons/lang3/text/StrBuilder.java
+  - src/main/java/org/apache/commons/lang3/text/StrMatcher.java
+  - src/main/java/org/apache/commons/lang3/text/StrSubstitutor.java
+  - src/main/java/org/apache/commons/lang3/text/StrTokenizer.java
+  - src/main/java/org/apache/commons/lang3/text/WordUtils.java
+  - src/main/java/org/apache/commons/lang3/text/translate/CharSequenceTranslator.java
+  - src/main/java/org/apache/commons/lang3/text/translate/JavaUnicodeEscaper.java
+  - src/main/java/org/apache/commons/lang3/text/translate/NumericEntityEscaper.java
+  - src/main/java/org/apache/commons/lang3/text/translate/UnicodeEscaper.java
+  - src/main/java/org/apache/commons/lang3/time/DateParser.java
+  - src/main/java/org/apache/commons/lang3/time/DatePrinter.java
+  - src/main/java/org/apache/commons/lang3/time/DateUtils.java
+  - src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java
+  - src/main/java/org/apache/commons/lang3/time/DurationUtils.java
+  - src/main/java/org/apache/commons/lang3/time/FastDateFormat.java
+  - src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+  - src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java
+  - src/main/java/org/apache/commons/lang3/time/FormatCache.java
+  - src/main/java/org/apache/commons/lang3/time/StopWatch.java
+  - src/main/java/org/apache/commons/lang3/tuple/ImmutablePair.java
+  - src/main/java/org/apache/commons/lang3/tuple/ImmutableTriple.java
+  - src/main/java/org/apache/commons/lang3/tuple/MutablePair.java
+  - src/main/java/org/apache/commons/lang3/tuple/MutableTriple.java
+  - src/main/java/org/apache/commons/lang3/tuple/Pair.java
+  - src/main/java/org/apache/commons/lang3/tuple/Triple.java
+  - src/main/java/org/apache/commons/lang3/util/FluentBitSet.java
+--------------------------------------------------
+Commit SHA: 25e91c4242283d118ba978d4f38cd18e10c890dc
+Message: Move new internal Calendar APIs to CalendarUtils and refactor.
+
+Author: Gary Gregory
+Date: 2022-05-15 15:51:31-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/CalendarUtils.java
+  - src/main/java/org/apache/commons/lang3/time/DateUtils.java
+  - src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java
+  - src/test/java/org/apache/commons/lang3/time/CalendarUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java
+--------------------------------------------------
+Commit SHA: a2ed219fb8ae0c5c453a069863359b4ba69ff230
+Message: Internal refactoring to allow to chain calls using
+MemberUtils.setAccessibleWorkaround().
+Author: Gary Gregory
+Date: 2022-05-10 18:35:20-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/reflect/ConstructorUtils.java
+  - src/main/java/org/apache/commons/lang3/reflect/FieldUtils.java
+  - src/main/java/org/apache/commons/lang3/reflect/MemberUtils.java
+  - src/main/java/org/apache/commons/lang3/reflect/MethodUtils.java
+--------------------------------------------------
+Commit SHA: 0f7d48488277cc64730b4b4ebe791986fa94da4e
+Message: LANG-1675 - Improve performance of StringUtils.join for primitives (#812)
+
+* String.join - boolean - use StringBuilder
+
+* Replaced StringJoiner by StringBuilder
+
+* Fix: formatting, removed condition in for
+
+* Use substring instead of deleteCharAt. Computed StringBuilder size for - char, boolean join methods
+
+* Reformating
+Author: Hubert
+Date: 2022-04-03 18:52:56+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+--------------------------------------------------
+Commit SHA: dd4e7bdc7cdac31905018fc5cbd11566d19be225
+Message: Refactor commons code.
+
+Author: Gary Gregory
+Date: 2022-04-03 10:57:59-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/text/StrBuilder.java
+  - src/main/java/org/apache/commons/lang3/text/StrTokenizer.java
+--------------------------------------------------
+Commit SHA: 85751a118e38f23b9009ccab1cdd3ea3b1d2dc5d
+Message: Refactor to create the mapping function once.
+
+Add FutureTasks.
+
+Author: Gary Gregory
+Date: 2022-03-21 09:19:13-04:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/concurrent/FutureTasks.java
+  - src/main/java/org/apache/commons/lang3/concurrent/Memoizer.java
+  - src/test/java/org/apache/commons/lang3/concurrent/FutureTasksTest.java
+--------------------------------------------------
+Commit SHA: c82d9a4809a94280adb25cd46151bdf139518f1d
+Message: [LANG-1462] Use TimeZone from calendar in DateFormatUtils.
+
+Adapted from PR #863 by mbuiakova with:
+- No SpotBugs failure
+- Refactored common code
+- Moved new test method to proper location in test class.
+
+Author: Gary Gregory
+Date: 2022-03-07 15:11:28-05:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/time/DateFormatUtils.java
+  - src/test/java/org/apache/commons/lang3/time/DateFormatUtilsTest.java
+--------------------------------------------------
+Commit SHA: aff1ad8ee53d4e3bf8a3996deda2ea93e84ebec0
+Message: Replace package with verify in the default goal.
+
+Author: Gary Gregory
+Date: 2022-03-04 10:01:32-05:00
+Files Affected:
+  - pom.xml
+--------------------------------------------------
+Commit SHA: 972bf05adea62b912984e1c06a990c815c0e901e
+Message: Refactor internals.
+Author: Gary Gregory
+Date: 2021-12-04 09:15:17-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/stream/Streams.java
+--------------------------------------------------
+Commit SHA: 1f06eb4dceca711641d1930e02a3a8cae2f25258
+Message: Refactor some test fixtures.
+
+Author: Gary Gregory
+Date: 2021-11-20 09:42:57-05:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/StringUtilsContainsTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsEqualsIndexOfTest.java
+  - src/test/java/org/apache/commons/lang3/Supplementary.java
+--------------------------------------------------
+Commit SHA: 38533393ba9922cd2c98fb7fafcd4f9b108f978c
+Message: Internal refactoring.
+
+Author: Gary Gregory
+Date: 2021-11-15 14:21:18-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/reflect/FieldUtils.java
+  - src/main/java/org/apache/commons/lang3/reflect/MemberUtils.java
+--------------------------------------------------
+Commit SHA: e9555ffa39a30f2be5a5ad619abc40f6723e20b6
+Message: Internal refactoring.
+
+Author: Gary Gregory
+Date: 2021-11-14 17:02:39-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/reflect/FieldUtils.java
+  - src/main/java/org/apache/commons/lang3/reflect/MemberUtils.java
+--------------------------------------------------
+Commit SHA: 34a85e74360f32dcfd7938e3a3c606a4869ca7e7
+Message: Refactorings; reuse UncheckedFuture.
+
+Author: Gary Gregory
+Date: 2021-08-30 09:13:57-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/concurrent/AbstractFutureProxy.java
+  - src/main/java/org/apache/commons/lang3/concurrent/UncheckedFutureImpl.java
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionToStringBuilderConcurrencyTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ToStringStyleConcurrencyTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/UncheckedFutureTest.java
+--------------------------------------------------
+Commit SHA: 197d50434748bfb2db935266cfe740fc01a607ee
+Message: Replace Java 15 with Java 16 in Travis CI.
+
+Author: Gary Gregory
+Date: 2021-06-06 10:46:31-04:00
+Files Affected:
+  - .travis.yml
+--------------------------------------------------
+Commit SHA: 69c9593cc1da760bb4dbcf32f4ae755c54376b77
+Message: Replace GitHub build for Java 15 with Java 16 and drop Java 16-ea.
+
+Author: Gary Gregory
+Date: 2021-03-17 15:49:49-04:00
+Files Affected:
+  - .github/workflows/maven.yml
+--------------------------------------------------
+Commit SHA: b59c7bfe249fc2d278f43492daf726b53eb8b28d
+Message: Use String.replace() instead of String.replaceAll().
+
+Author: Gary Gregory
+Date: 2021-03-02 10:36:40-05:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/time/FastDatePrinterTest.java
+--------------------------------------------------
+Commit SHA: 02ff51e50401e43dc7101b57e5f2306a8bcb7eee
+Message: Minor Improvements (#701)
+
+* Minor Improvement:
+
+* Add final variable.try to make the code read-only
+* inline Variable. Simplify code
+
+* Update UnicodeUnpairedSurrogateRemover.java
+
+Better comment.
+
+Co-authored-by: Gary Gregory <garydgregory@users.noreply.github.com>
+Author: Arturo Bernal
+Date: 2021-02-10 23:16:02+01:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/text/translate/UnicodeUnpairedSurrogateRemover.java
+  - src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+--------------------------------------------------
+Commit SHA: 2a8356cd433ccbe3338c823ad7c61b6f895cccf2
+Message: Replace StringBuilder with StringJoiner in join() APIs.
+
+Author: Gary Gregory
+Date: 2021-01-06 14:40:29-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+--------------------------------------------------
+Commit SHA: e6e16820893699da869136a28403a05e762c4778
+Message: Replace cascading if-else's with a case statement.
+
+Author: Gary Gregory
+Date: 2021-01-03 11:08:27-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/JavaVersion.java
+--------------------------------------------------
+Commit SHA: c284260c431f38c07c9ddb3defc2b1738b288c66
+Message: Travis: Replace Java 14 with 15.
+
+Author: Gary Gregory
+Date: 2020-11-20 21:38:35-05:00
+Files Affected:
+  - .travis.yml
+--------------------------------------------------
+Commit SHA: c9722131d50de2a78aaf79a222fa5135431b9a73
+Message: Add StopWatch.getStopTime().
+
+Also:
+- Rename private instance variable to reflect scale.
+- More precise Javadocs.
+- Throw IllegalStateException instead of RuntimeException.
+- Refactor common code in test for sleeping the current thread.
+
+Author: Gary Gregory
+Date: 2020-11-14 09:27:04-05:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/time/StopWatch.java
+  - src/test/java/org/apache/commons/lang3/time/StopWatchTest.java
+--------------------------------------------------
+Commit SHA: 8e0a8f2298315e977b206c437ef5dcf65fe545a8
+Message: Replace Java 14 with Java 15 as the latest Java version to test. Use
+Jaav 16 EA as the EA version to test.
+
+Author: Gary Gregory
+Date: 2020-09-19 15:46:59-04:00
+Files Affected:
+  - .github/workflows/maven.yml
+--------------------------------------------------
+Commit SHA: 9dbabe249449aa7feef2375768d3472f75944db3
+Message: Correct Javadocs of methods that use Validate.notNull() and replace some
+uses of Validate.isTrue() with Validate.notNull(). #525.
+
+Author: Gary Gregory
+Date: 2020-07-09 21:27:42-04:00
+Files Affected:
+  - src/changes/changes.xml
+--------------------------------------------------
+Commit SHA: 3700641b4e745a1804b4409c58dee15b459dad16
+Message: Correct Javadocs of methods that use Validate.notNull() and replace some uses of Validate.isTrue() with Validate.notNull(). (#525)
+
+* Update Javadocs of methods that call Validate.notNull() to refer to NullPointerException instead of IllegalArgumentException for null values.
+
+* Use Validate.notNull() instead of Validate.isTrue() to check for null values, and update the associated tests to check for NullPointerException instead of IllegalArgumentException.
+Author: Isira Seneviratne
+Date: 2020-07-10 01:26:19+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/CharUtils.java
+  - src/main/java/org/apache/commons/lang3/SerializationUtils.java
+  - src/main/java/org/apache/commons/lang3/builder/DiffBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/DiffResult.java
+  - src/main/java/org/apache/commons/lang3/math/Fraction.java
+  - src/main/java/org/apache/commons/lang3/math/IEEE754rUtils.java
+  - src/main/java/org/apache/commons/lang3/reflect/FieldUtils.java
+  - src/main/java/org/apache/commons/lang3/reflect/MethodUtils.java
+  - src/main/java/org/apache/commons/lang3/time/DateUtils.java
+  - src/main/java/org/apache/commons/lang3/time/FormatCache.java
+  - src/test/java/org/apache/commons/lang3/reflect/MethodUtilsTest.java
+--------------------------------------------------
+Commit SHA: da0f6a8051cc60d1bebe703b4e390ce3035497db
+Message: Refactor SpotBugs implementation version into spotbugs.impl.version.
+
+Author: Gary Gregory
+Date: 2020-06-28 15:45:50-04:00
+Files Affected:
+  - pom.xml
+--------------------------------------------------
+Commit SHA: 4453bb3ede27278e414cb634c2db1ad268116622
+Message: Fix @since for new o.a.c.lang3.stream.Streams class.
+
+This replaces o.a.c.lang3.Streams.
+Author: aherbert
+Date: 2020-06-18 12:13:15+01:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/stream/Streams.java
+--------------------------------------------------
+Commit SHA: 553a3a75dfafbf50d7efd8d6e88da71a637a2aa7
+Message: [LANG-1528] StringUtils.replaceEachRepeatedly gives
+IllegalStateException #505.
+
+Author: Gary Gregory
+Date: 2020-06-13 11:33:08-04:00
+Files Affected:
+  - src/changes/changes.xml
+--------------------------------------------------
+Commit SHA: d62d4e21ef20ee01e65cbf5257e04d6b572aa73b
+Message: [LANG-1528] replaceEachRepeatedly gives IllegalStateException (#505)
+
+* Fix https://issues.apache.org/jira/browse/LANG-1528
+
+* Fix https://issues.apache.org/jira/browse/LANG-1528
+
+Co-authored-by: Edwin DH <peo_ehuaynalaya@uolinc.com>
+Author: Edwin Delgado H
+Date: 2020-06-13 12:31:07-03:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 9388c5747f4a742d2de28ae6fc0d92f97efc6b32
+Message: [LANG-1534] Replace some usages of the ternary operator with calls to
+Math.max() and Math.min() #512.
+
+Author: Gary Gregory
+Date: 2020-04-20 16:58:20-04:00
+Files Affected:
+  - src/changes/changes.xml
+--------------------------------------------------
+Commit SHA: 271cf4c9e945cbab3a1f87e905d4c6d52facd95d
+Message: [LANG-1537] Simplify a null check in the private replaceEach() method of
+StringUtils. #514.
+
+Author: Gary Gregory
+Date: 2020-04-20 16:56:02-04:00
+Files Affected:
+  - src/changes/changes.xml
+--------------------------------------------------
+Commit SHA: 0b899ee40b23e8e73e11f1604342be3e278b467d
+Message: Simplify a null check in the private replaceEach() method. (#514)
+
+
+Author: Isira Seneviratne
+Date: 2020-04-20 20:54:33+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+--------------------------------------------------
+Commit SHA: 93701c9ad764e94968d6ae290f935f46b10eb68c
+Message: Replace Java 12 and 13 builds with Java 14.
+
+Author: pascalschumacher
+Date: 2020-03-21 15:26:48+01:00
+Files Affected:
+  - .github/workflows/maven.yml
+  - .travis.yml
+--------------------------------------------------
+Commit SHA: 23931d528e829e7f76235b9df0ec03a9d4e93fca
+Message: Functions Javadoc (#466)
+
+* LANG-1480 getAbbreviatedName refactored to create appropriate length short class names
+
+* LANG-1480 code fixed for special extreme case ".." abbreviated to 1 length should result ".." it was throwing exception. Tests are added
+
+* import changed to avoid wild cards
+apache master merged into current branch
+
+* Mutable object import was moved to it's original place
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* added another test case
+
+* LANG-1480 fixing JavaDoc documentation as per requested by garydgregory
+
+* LANG-1480 shortcut implemented, argument renamed, more tests
+
+* LANG-1480 checkstyle update
+
+* LANG-1492 tests methods modified to be public
+
+* LANG-1480 imports rearranged
+
+* LANG-1480 imports rearranged
+
+* LANG-1480 imports rearranged
+
+* javadoc was added that explains why there is a return type for a method that never returns
+
+* wording changed in comment
+
+* fixes based on code review by garydgregory
+
+Author: Peter Verhas
+Date: 2019-12-21 14:42:53+01:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/Functions.java
+--------------------------------------------------
+Commit SHA: 936dd601b777454e45df38fcc117e623b21d3e5c
+Message: BooleanUtils Javadoc (#469)
+
+* LANG-1480 getAbbreviatedName refactored to create appropriate length short class names
+
+* LANG-1480 code fixed for special extreme case ".." abbreviated to 1 length should result ".." it was throwing exception. Tests are added
+
+* import changed to avoid wild cards
+apache master merged into current branch
+
+* Mutable object import was moved to it's original place
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* added another test case
+
+* LANG-1480 fixing JavaDoc documentation as per requested by garydgregory
+
+* LANG-1480 shortcut implemented, argument renamed, more tests
+
+* LANG-1480 checkstyle update
+
+* LANG-1492 tests methods modified to be public
+
+* LANG-1480 imports rearranged
+
+* LANG-1480 imports rearranged
+
+* LANG-1480 imports rearranged
+
+* some simplification that were there since before Java 1.4
+
+* mainly unneccessary unboxing
+
+* documentation partly reverted
+
+* javadoc changes only
+
+* ArrayUtils change reverted
+
+Author: Peter Verhas
+Date: 2019-12-21 14:39:19+01:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/BooleanUtils.java
+--------------------------------------------------
+Commit SHA: cb2ec37bd393030b58b3aaf3129dcf83c5a0a6c6
+Message: Replace Character constructor (deprecated on Java 9+) calls in tests with Character#valueOf.
+
+Author: pascalschumacher
+Date: 2019-12-20 13:08:50+01:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/CharUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/RandomStringUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/StringEscapeUtilsTest.java
+--------------------------------------------------
+Commit SHA: 7bbbdd2477305992e4d809db5288d6f62718124b
+Message: Javadoc: Replace <code></code> HTML tags with Javadoc {@code} notation.
+Author: Gary Gregory
+Date: 2019-12-10 16:27:02-05:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ArchUtils.java
+  - src/main/java/org/apache/commons/lang3/ArrayUtils.java
+  - src/main/java/org/apache/commons/lang3/CharSequenceUtils.java
+  - src/main/java/org/apache/commons/lang3/Functions.java
+  - src/main/java/org/apache/commons/lang3/JavaVersion.java
+  - src/main/java/org/apache/commons/lang3/NotImplementedException.java
+  - src/main/java/org/apache/commons/lang3/RegExUtils.java
+  - src/main/java/org/apache/commons/lang3/SerializationUtils.java
+  - src/main/java/org/apache/commons/lang3/StringEscapeUtils.java
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/main/java/org/apache/commons/lang3/SystemUtils.java
+  - src/main/java/org/apache/commons/lang3/arch/Processor.java
+  - src/main/java/org/apache/commons/lang3/builder/CompareToBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/EqualsBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/EqualsExclude.java
+  - src/main/java/org/apache/commons/lang3/builder/HashCodeBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/HashCodeExclude.java
+  - src/main/java/org/apache/commons/lang3/builder/MultilineRecursiveToStringStyle.java
+  - src/main/java/org/apache/commons/lang3/builder/RecursiveToStringStyle.java
+  - src/main/java/org/apache/commons/lang3/builder/ReflectionToStringBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/StandardToStringStyle.java
+  - src/main/java/org/apache/commons/lang3/builder/ToStringBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/ToStringStyle.java
+  - src/main/java/org/apache/commons/lang3/concurrent/ConcurrentUtils.java
+  - src/main/java/org/apache/commons/lang3/concurrent/package-info.java
+  - src/main/java/org/apache/commons/lang3/event/EventListenerSupport.java
+  - src/main/java/org/apache/commons/lang3/exception/ExceptionUtils.java
+  - src/main/java/org/apache/commons/lang3/exception/package-info.java
+  - src/main/java/org/apache/commons/lang3/math/Fraction.java
+  - src/main/java/org/apache/commons/lang3/math/IEEE754rUtils.java
+  - src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+  - src/main/java/org/apache/commons/lang3/math/package-info.java
+  - src/main/java/org/apache/commons/lang3/mutable/Mutable.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableBoolean.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableByte.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableDouble.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableFloat.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableInt.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableLong.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableObject.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableShort.java
+  - src/main/java/org/apache/commons/lang3/package-info.java
+  - src/main/java/org/apache/commons/lang3/reflect/ConstructorUtils.java
+  - src/main/java/org/apache/commons/lang3/reflect/FieldUtils.java
+  - src/main/java/org/apache/commons/lang3/reflect/MemberUtils.java
+  - src/main/java/org/apache/commons/lang3/text/CompositeFormat.java
+  - src/main/java/org/apache/commons/lang3/text/ExtendedMessageFormat.java
+  - src/main/java/org/apache/commons/lang3/text/FormatFactory.java
+  - src/main/java/org/apache/commons/lang3/text/StrBuilder.java
+  - src/main/java/org/apache/commons/lang3/text/StrMatcher.java
+  - src/main/java/org/apache/commons/lang3/text/StrSubstitutor.java
+  - src/main/java/org/apache/commons/lang3/text/StrTokenizer.java
+  - src/main/java/org/apache/commons/lang3/text/WordUtils.java
+  - src/main/java/org/apache/commons/lang3/text/package-info.java
+  - src/main/java/org/apache/commons/lang3/text/translate/CharSequenceTranslator.java
+  - src/main/java/org/apache/commons/lang3/text/translate/JavaUnicodeEscaper.java
+  - src/main/java/org/apache/commons/lang3/text/translate/NumericEntityEscaper.java
+  - src/main/java/org/apache/commons/lang3/text/translate/UnicodeEscaper.java
+  - src/main/java/org/apache/commons/lang3/time/DateFormatUtils.java
+  - src/main/java/org/apache/commons/lang3/time/DateParser.java
+  - src/main/java/org/apache/commons/lang3/time/DateUtils.java
+  - src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java
+  - src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+  - src/main/java/org/apache/commons/lang3/time/FormatCache.java
+  - src/main/java/org/apache/commons/lang3/time/StopWatch.java
+  - src/test/java/org/apache/commons/lang3/builder/CompareToBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/HashCodeBuilderAndEqualsBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ToStringBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ExceptionUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/FieldUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/text/ExtendedMessageFormatTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrTokenizerTest.java
+--------------------------------------------------
+Commit SHA: f3ad91ca383a8c0dd8d8f69d6276f2558ad7c924
+Message: AnnotationUtils little cleanup (#467)
+
+* LANG-1480 getAbbreviatedName refactored to create appropriate length short class names
+
+* LANG-1480 code fixed for special extreme case ".." abbreviated to 1 length should result ".." it was throwing exception. Tests are added
+
+* import changed to avoid wild cards
+apache master merged into current branch
+
+* Mutable object import was moved to it's original place
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* added another test case
+
+* LANG-1480 fixing JavaDoc documentation as per requested by garydgregory
+
+* LANG-1480 shortcut implemented, argument renamed, more tests
+
+* LANG-1480 checkstyle update
+
+* LANG-1492 tests methods modified to be public
+
+* LANG-1480 imports rearranged
+
+* LANG-1480 imports rearranged
+
+* LANG-1480 imports rearranged
+
+* little refactor
+
+* unused import deleted
+
+* space+
+
+* space-
+
+Author: Peter Verhas
+Date: 2019-10-16 00:30:59+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/AnnotationUtils.java
+--------------------------------------------------
+Commit SHA: bedae6950d43008929d9cd109c9e8fb163793bd7
+Message: LANG-1480 getAbbreviatedName refactored to create appropriate length … (#446)
+
+* LANG-1480 getAbbreviatedName refactored to create appropriate length short class names
+
+* LANG-1480 code fixed for special extreme case ".." abbreviated to 1 length should result ".." it was throwing exception. Tests are added
+
+* import changed to avoid wild cards
+apache master merged into current branch
+
+* Mutable object import was moved to it's original place
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* some accidental formatting reverted
+
+* added another test case
+
+* LANG-1480 fixing JavaDoc documentation as per requested by garydgregory
+
+* LANG-1480 shortcut implemented, argument renamed, more tests
+
+* LANG-1480 checkstyle update
+
+* LANG-1492 tests methods modified to be public
+
+* LANG-1480 imports rearranged
+
+* LANG-1480 imports rearranged
+
+* LANG-1480 imports rearranged
+
+* imports were added that were accidentally removed during merging master
+
+Author: Peter Verhas
+Date: 2019-10-12 21:16:54+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ClassUtils.java
+  - src/test/java/org/apache/commons/lang3/ClassUtilsTest.java
+--------------------------------------------------
+Commit SHA: a32c188c32fd0c4a8149bcda524d704dd609da6e
+Message: Code refactor to simplify Functions and new tests (#463)
+
+* more tests
+
+* formatting change as per requested by checkstyle
+
+* DisplayName was added to the tests
+
+* throw on odd refactored to eliminate copy paste
+
+Author: Peter Verhas
+Date: 2019-10-12 21:12:17+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/Functions.java
+  - src/test/java/org/apache/commons/lang3/FunctionsTest.java
+--------------------------------------------------
+Commit SHA: e7c6c5b66b8802be082dd1daf1e0e34c975ad49e
+Message: [LANG-1406] StringIndexOutOfBoundsException in
+StringUtils.replaceIgnoreCase
+
+Fix dead store issue found by SpotBugs and enforce SpotBugs on CI
+builds.
+
+Author: Gary Gregory
+Date: 2019-09-11 09:57:28-04:00
+Files Affected:
+  - .github/workflows/maven.yml
+  - .travis.yml
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+--------------------------------------------------
+Commit SHA: d68e2e9125126938399175f424f06301f497b920
+Message: [LANG-1406] StringIndexOutOfBoundsException in
+StringUtils.replaceIgnoreCase
+
+Closes #423.
+
+Author: geratorres
+Date: 2019-09-11 09:12:53-04:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 5e7d64d6b2719afb1e5f4785d80d24ac5a19a782
+Message: Refactor duplicate code.
+Author: Gary Gregory
+Date: 2019-09-03 16:20:19-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/DateUtils.java
+--------------------------------------------------
+Commit SHA: 715051e086b2131229f1f9f0c7e2b4fc0c39bbf2
+Message: Replace Apache HTTP URL with HTTPS version.
+Author: Gary Gregory
+Date: 2019-07-07 10:33:13-04:00
+Files Affected:
+  - src/site/xdoc/mail-lists.xml
+--------------------------------------------------
+Commit SHA: c01fa9aa42e078951f9d77ffe3b7546411278633
+Message: Simplify assertions (closes #404)
+
+Use JUnit methods to clean up the test and simplify the assertions:
+- assertArraysEqual(x, y) replaces assertTrue(Arrays.equals(x, y))
+- assertEquals(x, y) replaces assertTrue(x == y)
+- assertNotEquals(x, y) replaces assertFalse(x == y)
+
+Author: Allon Mureinik
+Date: 2019-02-08 21:41:33+02:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsAddTest.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsRemoveMultipleTest.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsRemoveTest.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/CharRangeTest.java
+  - src/test/java/org/apache/commons/lang3/ClassUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/ObjectUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/RangeTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/builder/EqualsBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableBooleanTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableByteTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableDoubleTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableFloatTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableIntTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableLongTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableObjectTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableShortTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/ConstructorUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/MethodUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/text/ExtendedMessageFormatTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/tuple/PairTest.java
+--------------------------------------------------
+Commit SHA: c5eadb1c6d5245526bf895f22957cadec3dfc3b6
+Message: Functions.java whitspaces
+
+Replace tabs with four spaces, as per the project's Checkstyle rules.
+
+Author: Allon Mureinik
+Date: 2019-02-08 19:30:35+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/Functions.java
+--------------------------------------------------
+Commit SHA: cee7cc6b6470362b12c134b4ed3f3b9bdcd4e465
+Message: Refactoring junits of JsonToStringStyle
+
+Author: RahulNagekar
+Date: 2018-12-21 01:05:50+05:30
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/builder/JsonToStringStyleTest.java
+--------------------------------------------------
+Commit SHA: e99b0dde8ee5069eaee745b62b57b109def4b22c
+Message: Update tests to JUnit Jupiter (closes #375)
+
+This patch finalizes the upgrade of commons-lang's tests to use JUnit
+Jupiter and remove the Vintage Engine dependency entirely.
+
+While most of these changes are drop-in replacements with no functional
+benefit, there are some non-obvious changes worth mentioning.
+
+Unlike org.junit.Assert.assertEquals(double, double, double),
+org.junit.jupiter.api.Assertions.assertEquals(double, double, double)
+does not support deltas of zero, only strictly positive deltas.
+This issue will be addressed in JUnit Jupiter 5.4 (see
+https://github.com/junit-team/junit5/pull/1613 for details). In the
+meanwhile, assertTrue(expected==actual) was used, and TODO comments were
+placed in the code to refactor it to assertEquals once JUnit 5.4 is
+available.
+
+Unlike org.junit.Test, org.junit.jupiter.api.Test does not have an
+"expected" argument. Instead, an explicit call to
+org.junit.jupiter.api.Assertions.assertThrows is used.
+
+Unlike org.junit.Test, org.junit.jupiter.api.Test does not have a
+"timeout" argument either. Instead, an explicit call to
+org.junit.jupiter.api.Assertions.assertTimeoutPreemptively is used.
+
+JUnit Jupiter also no longer has the concept of Rules. Usages of the
+SystemDefaultsSwitch rule and its accompanying annotates were replaced
+with the @DefaultLocale annotation that Benedikt Ritter contributed to
+JUnit Pioneer, the semi-official JUnit extension project.
+Following the removal of their usages, the SystemDefaults annotation,
+the SystemDefaultsSwitch rule and the SystemDefaultsSwitchTest class
+that tests them had no more use, and they were removed entirely.
+
+It's also worth noting this is a minimal patch for migrating the
+package's tests to Jupiter. There are several tests that can be made
+more elegant with Jupiter's new features, but that work is left for
+subsequent patches.
+
+Author: Allon Mureinik
+Date: 2018-10-11 16:21:52+03:00
+Files Affected:
+  - pom.xml
+  - src/test/java/org/apache/commons/lang3/AnnotationUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/ArchUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsAddTest.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsInsertTest.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsRemoveMultipleTest.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsRemoveTest.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/BitFieldTest.java
+  - src/test/java/org/apache/commons/lang3/BooleanUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/CharEncodingTest.java
+  - src/test/java/org/apache/commons/lang3/CharRangeTest.java
+  - src/test/java/org/apache/commons/lang3/CharSequenceUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/CharSetTest.java
+  - src/test/java/org/apache/commons/lang3/CharSetUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/CharUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/ClassPathUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/ClassUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/ConversionTest.java
+  - src/test/java/org/apache/commons/lang3/EnumUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/JavaVersionTest.java
+  - src/test/java/org/apache/commons/lang3/LocaleUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/NotImplementedExceptionTest.java
+  - src/test/java/org/apache/commons/lang3/ObjectUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/RandomStringUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/RandomUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/RangeTest.java
+  - src/test/java/org/apache/commons/lang3/RegExUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/SerializationUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/StringEscapeUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsContainsTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsEmptyBlankTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsEqualsIndexOfTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsIsTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsStartsEndsWithTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsSubstringTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTrimStripTest.java
+  - src/test/java/org/apache/commons/lang3/SystemUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/ThreadUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/test/SystemDefaults.java
+  - src/test/java/org/apache/commons/lang3/test/SystemDefaultsSwitch.java
+  - src/test/java/org/apache/commons/lang3/test/SystemDefaultsSwitchTest.java
+--------------------------------------------------
+Commit SHA: ca2e59c513edc2a8b30ff62595e01f8dff79f0d2
+Message: Update time tests to JUnit Jupiter
+
+Upgrade the tests in the time package to use JUnit Jupiter as
+part of the effort to remove the dependency on the Vintage Engine.
+
+While most of these changes are drop-in replacements with no functional
+benefit, there are some non-obvious changes worth mentioning.
+
+Unlike org.junit.Test, org.junit.jupiter.api.Test does not have an
+"expected" argument. Instead, an explicit call to
+org.junit.jupiter.api.Assertions.assertThrows is used.
+
+JUnit Jupiter no longer has a concept of runners. Tests previously run
+with the org.junit.runners.Parameterized runner were rewritten to use
+@ParameterizedTest and a @MethodSource.
+
+JUnit Jupiter also no longer has the concept of Rules. Usages of the
+SystemDefaultsSwitch rule and its accompanying annotates were replaced
+with the @DefaultLocale and @DefaultTimezone annotations that
+Benedikt Ritter contributed to JUnit Pioneer, the semi-official JUnit
+extension project.
+
+It's also worth noting this is a minimal patch for migrating the
+package's tests to Jupiter. There are several tests that can be made
+more elegant with Jupiter's new features, but that work is left for
+subsequent patches.
+
+Author: Allon Mureinik
+Date: 2018-10-02 06:41:37+03:00
+Files Affected:
+  - pom.xml
+  - src/test/java/org/apache/commons/lang3/time/DateFormatUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/time/DateUtilsFragmentTest.java
+  - src/test/java/org/apache/commons/lang3/time/DateUtilsRoundingTest.java
+  - src/test/java/org/apache/commons/lang3/time/DateUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/time/DurationFormatUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateFormatTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParserSDFTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParserTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParser_MoreOrLessTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDatePrinterTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDatePrinterTimeZonesTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastTimeZoneTest.java
+  - src/test/java/org/apache/commons/lang3/time/GmtTimeZoneTest.java
+  - src/test/java/org/apache/commons/lang3/time/StopWatchTest.java
+  - src/test/java/org/apache/commons/lang3/time/WeekYearTest.java
+--------------------------------------------------
+Commit SHA: 94beded83960af2a15992f6cec8f1f59d1f3c051
+Message: Update mutable tests to JUnit Jupiter
+
+Upgrade the tests in the mutable package to use JUnit Jupiter as
+part of the effort to remove the dependency on the Vintage Engine.
+
+While most of these changes are drop-in replacements with no functional
+benefit, there are some non-obvious changes worth mentioning.
+
+Unlike org.junit.Test, org.junit.jupiter.api.Test does not have an
+"expected" argument. Instead, an explicit call to
+org.junit.jupiter.api.Assertions.assertThrows is used.
+
+Unlike org.junit.Assert.assertEquals(double, double, double),
+org.junit.jupiter.api.Assertions.assertEquals(double, double, double)
+does not support deltas of zero, only strictly positive deltas.
+This issue will be addressed in JUnit Jupiter 5.4 (see
+https://github.com/junit-team/junit5/pull/1613 for details). In the
+meanwhile, assertTrue(expected==actual) was used, and TODO comments were
+placed in the code to refactor it to assertEquals once JUnit 5.4 is
+available.
+
+It's also worth noting this is a minimal patch for migrating the
+package's tests to Jupiter. There are several tests that can be made
+more elegant with Jupiter's new features, but that work is left for
+subsequent patches.
+
+Author: Allon Mureinik
+Date: 2018-10-02 06:41:37+03:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/mutable/MutableBooleanTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableByteTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableDoubleTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableFloatTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableIntTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableLongTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableObjectTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableShortTest.java
+--------------------------------------------------
+Commit SHA: 47a9ea7c828772625b9e26c0c7a6db494ea626a3
+Message: Update math tests to JUnit Jupiter
+
+Upgrade the tests in the math package to use JUnit Jupiter as
+part of the effort to remove the dependency on the Vintage Engine.
+
+While most of these changes are drop-in replacements with no functional
+benefit, there are some non-obvious changes worth mentioning.
+
+Unlike org.junit.Test, org.junit.jupiter.api.Test does not have an
+"expected" argument. Instead, an explicit call to
+org.junit.jupiter.api.Assertions.assertThrows is used.
+
+Unlike org.junit.Assert.assertEquals(double, double, double),
+org.junit.jupiter.api.Assertions.assertEquals(double, double, double)
+does not support deltas of zero, only strictly positive deltas.
+This issue will be addressed in JUnit Jupiter 5.4 (see
+https://github.com/junit-team/junit5/pull/1613 for details). In the
+meanwhile, assertTrue(expected==actual) was used, and TODO comments were
+placed in the code to refactor it to assertEquals once JUnit 5.4 is
+available.
+
+It's also worth noting this is a minimal patch for migrating the
+package's tests to Jupiter. There are several tests that can be made
+more elegant with Jupiter's new features, but that work is left for
+subsequent patches.
+
+Author: Allon Mureinik
+Date: 2018-10-02 06:41:37+03:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/math/FractionTest.java
+  - src/test/java/org/apache/commons/lang3/math/IEEE754rUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+--------------------------------------------------
+Commit SHA: 182e335432fe4634d770c5861be40dacf1816f0c
+Message: Update text tests to JUnit Jupiter
+
+Upgrade the tests in the text package to use JUnit Jupiter as
+part of the effort to remove the dependency on the Vintage Engine.
+
+While most of these changes are drop-in replacements with no functional
+benefit, there are some non-obvious changes worth mentioning.
+
+Unlike org.junit.Test, org.junit.jupiter.api.Test does not have an
+"expected" argument. Instead, an explicit call to
+org.junit.jupiter.api.Assertions.assertThrows is used.
+
+It's also worth noting this is a minimal patch for migrating the
+package's tests to Jupiter. There are several tests that can be made
+more elegant with Jupiter's new features, but that work is left for
+subsequent patches.
+
+Author: Allon Mureinik
+Date: 2018-10-02 06:41:37+03:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/text/CompositeFormatTest.java
+  - src/test/java/org/apache/commons/lang3/text/ExtendedMessageFormatTest.java
+  - src/test/java/org/apache/commons/lang3/text/FormattableUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrBuilderAppendInsertTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrLookupTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrMatcherTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrSubstitutorTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrTokenizerTest.java
+  - src/test/java/org/apache/commons/lang3/text/WordUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/text/translate/EntityArraysTest.java
+  - src/test/java/org/apache/commons/lang3/text/translate/LookupTranslatorTest.java
+  - src/test/java/org/apache/commons/lang3/text/translate/NumericEntityEscaperTest.java
+  - src/test/java/org/apache/commons/lang3/text/translate/NumericEntityUnescaperTest.java
+  - src/test/java/org/apache/commons/lang3/text/translate/OctalUnescaperTest.java
+  - src/test/java/org/apache/commons/lang3/text/translate/UnicodeEscaperTest.java
+  - src/test/java/org/apache/commons/lang3/text/translate/UnicodeUnescaperTest.java
+  - src/test/java/org/apache/commons/lang3/text/translate/UnicodeUnpairedSurrogateRemoverTest.java
+--------------------------------------------------
+Commit SHA: cbc8e0b2952164f97779c9a5fadca6acd2600ae2
+Message: Update reflect tests to JUnit Jupiter
+
+Upgrade the tests in the reflect package to use JUnit Jupiter as
+part of the effort to remove the dependency on the Vintage Engine.
+
+While most of these changes are drop-in replacements with no functional
+benefit, there are some non-obvious changes worth mentioning.
+
+Unlike org.junit.Test, org.junit.jupiter.api.Test does not have an
+"expected" argument. Instead, an explicit call to
+org.junit.jupiter.api.Assertions.assertThrows is used.
+
+Unlike org.junit.Assume, org.junit.jupiter.api.Assumptions does not have
+an assumtNotNull method. Instead, assumeTrue was used with an explicit
+condition of a variable being different than null.
+
+It's also worth noting this is a minimal patch for migrating the
+package's tests to Jupiter. There are several tests that can be made
+more elegant with Jupiter's new features, but that work is left for
+subsequent patches.
+
+Author: Allon Mureinik
+Date: 2018-10-02 06:41:37+03:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/reflect/ConstructorUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/FieldUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/InheritanceUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/MethodUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/TypeLiteralTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/TypeUtilsTest.java
+--------------------------------------------------
+Commit SHA: 884d273f4207095f881167b3398fc2a55617ee9a
+Message: Update exception tests to JUnit Jupiter
+
+Upgrade the tests in the exception package to use JUnit Jupiter as
+part of the effort to remove the dependency on the Vintage Engine.
+
+While most of these changes are drop-in replacements with no functional
+benefit, there are some non-obvious changes worth mentioning.
+
+Unlike org.junit.Test, org.junit.jupiter.api.Test does not have an
+"expected" argument. Instead, an explicit call to
+org.junit.jupiter.api.Assertions.assertThrows is used.
+
+Another non-obvious change was performed in
+ContextedRuntimeExceptionTest. Unlike JUnit Vintages's @Before, JUnit
+Jupiter's @BeforeEach does not apply if a parent's method is annotated
+with it and the overriding method is not, so an explicit @BeforeEach
+annotation had to be added to ContexedTuntimeExceptionTest#setUp().
+
+It's also worth noting this is a minimal patch for migrating the
+package's tests to Jupiter. There are several tests that can be made
+made more elegant with Jupiter's new features, but that work is left
+for subsequent patches.
+
+Author: Allon Mureinik
+Date: 2018-10-02 06:41:37+03:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/exception/AbstractExceptionContextTest.java
+  - src/test/java/org/apache/commons/lang3/exception/CloneFailedExceptionTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ContextedExceptionTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ContextedRuntimeExceptionTest.java
+  - src/test/java/org/apache/commons/lang3/exception/DefaultExceptionContextTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ExceptionUtilsTest.java
+--------------------------------------------------
+Commit SHA: 762641dcdbae9456aa2b72ec8fa1baa0acab942f
+Message: Update event tests to JUnit Jupiter
+
+Upgrade the tests in the event package to use JUnit Jupiter as
+part of the effort to remove the dependency on the Vintage Engine.
+
+While most of these changes are drop-in replacements with no functional
+benefit, it is worth noting the tests that test thrown excetpions.
+Prior to this patch, this package tested for exceptions in two ways,
+neither of which are supported in JUnit Jupiter:
+1. With the "expected" argument of the org.junit.Test annotation.
+2. With the org.junit.rules.ExpectedException @Rule
+
+Both of these usages were replaced with calls to
+org.junit.jupiter.api.Assertions#assertThrows.
+
+Author: Allon Mureinik
+Date: 2018-10-02 06:41:37+03:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/event/EventListenerSupportTest.java
+  - src/test/java/org/apache/commons/lang3/event/EventUtilsTest.java
+--------------------------------------------------
+Commit SHA: dd761382d3cfdc11b5de0cb1246de4567cdf2fc2
+Message: Update concurrent tests to JUnit Jupiter
+
+Upgrade the tests in the concurrent package to use JUnit Jupiter as
+part of the effort to remove the dependency on the Vintage Engine.
+
+While most of these changes are drop-in replacements with no functional
+benefit, there are some non-obvious changes worth mentioning.
+
+Unlike org.junit.Test, org.junit.jupiter.api.Test does not have an
+"expected" argument. Instead, an explicit call to
+org.junit.jupiter.api.Assertions.assertThrows is used. This call allows
+the test to pinpoint the exact statement that is expected to throw the
+exception and allows making the tests a bit stricter by preventing
+false-positives that could occur if the setup code would throw the
+expected exception instead of the statement that was supposed to throw
+it.
+
+Another notable change was performed in MemoizerTest.
+JUnit Jupiter does not support JUnit 4's runners, and EasyMock has no
+equivalent @Extension, so a setup method was added and the mock was
+explicitly initialized.
+
+It's also worth noting this is a minimal patch for migrating the
+package's tests to Jupiter. There are several tests that can be made
+made more elegant with Jupiter's new features, but that work is left
+for subsequent patches.
+
+Author: Allon Mureinik
+Date: 2018-10-02 06:41:37+03:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/concurrent/AbstractConcurrentInitializerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/AtomicSafeInitializerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/BackgroundInitializerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/BasicThreadFactoryTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/CallableBackgroundInitializerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/CircuitBreakingExceptionTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/ConcurrentUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/ConstantInitializerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/EventCountCircuitBreakerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/LazyInitializerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/MemoizerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/MultiBackgroundInitializerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/ThresholdCircuitBreakerTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/TimedSemaphoreTest.java
+--------------------------------------------------
+Commit SHA: 4d5c5a8afd51157d6cecb886c55c430125475dea
+Message: Replace FindBugs with SpotBugs: Fix source assembly
+
+Author: pascalschumacher
+Date: 2018-10-06 10:10:06+02:00
+Files Affected:
+  - src/assembly/src.xml
+--------------------------------------------------
+Commit SHA: 729adb624d3e720afb8686093814ab2bcc2d2f13
+Message: Update builder tests to JUnit Jupiter
+
+Upgrade the tests in the builder package to use JUnit Jupiter as part of
+the effort to remove the dependency on the Vintage Engine.
+
+While most of these changes are drop-in replacements with no functional
+benefit, it is worth mentioning the change to how expected exceptions
+are tested.
+Unlike org.junit.Test, org.junit.jupiter.api.Test does not have an
+"expected" argument. Instead, an explicit call to
+org.junit.jupiter.api.Assertions.assertThrows is used. This call allows
+the test to pinpoint the exact statement that is expected to throw the
+expcetion and allows making the tests a bit stricter by preventing
+false-positives that could occur if the setup code would throw the
+expected exception instead of the statement that was supposed to throw
+it.
+
+Author: Allon Mureinik
+Date: 2018-10-02 06:41:37+03:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/builder/CompareToBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/DefaultToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/builder/DiffBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/DiffResultTest.java
+  - src/test/java/org/apache/commons/lang3/builder/DiffTest.java
+  - src/test/java/org/apache/commons/lang3/builder/EqualsBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/HashCodeBuilderAndEqualsBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/HashCodeBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/JsonToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/builder/MultiLineToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/builder/MultilineRecursiveToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/builder/NoClassNameToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/builder/NoFieldNamesToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/builder/RecursiveToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionDiffBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionToStringBuilderConcurrencyTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionToStringBuilderExcludeNullValuesTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionToStringBuilderExcludeTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionToStringBuilderExcludeWithAnnotationTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionToStringBuilderMutateInspectConcurrencyTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionToStringBuilderSummaryTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionToStringBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ShortPrefixToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/builder/SimpleToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/builder/StandardToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ToStringBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ToStringStyleConcurrencyTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ToStringStyleTest.java
+--------------------------------------------------
+Commit SHA: ba7ca7998f9fe0fa443e9636122944de727f9be4
+Message: StringUtils: trivial formatting change.
+
+This replaces <code> with {@code} primarily as a way to test
+INFRA-17094.
+
+Author: Eitan Adler
+Date: 2018-10-05 19:47:03-07:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+--------------------------------------------------
+Commit SHA: 82fd2516d6c018e46ef290e05551349a9ed82ca8
+Message: Replace FindBugs with SpotBugs
+
+Author: pascalschumacher
+Date: 2018-08-28 19:00:09+02:00
+Files Affected:
+  - findbugs-exclude-filter.xml
+  - pom.xml
+  - spotbugs-exclude-filter.xml
+--------------------------------------------------
+Commit SHA: 7721302ae5d70d2986d74ae7e7df648bf849997d
+Message: LANG-1402: refactored to return default value on negative index
+
+Author: MarkDacek
+Date: 2018-07-08 19:11:19-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ArrayUtils.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsTest.java
+--------------------------------------------------
+Commit SHA: 2521d9619fe1f052ced8ea1107851ac98a1b7488
+Message: refactored to Generics and added isArrayIndexValid
+
+Author: MarkDacek
+Date: 2018-07-08 16:15:54-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ArrayUtils.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsTest.java
+--------------------------------------------------
+Commit SHA: ae6a24dd439a7b778e35b484a3a6eae1a8eb64d7
+Message: replaces primitive comparison with x.compare() where x is a wrapper class of the primitive
+
+Author: Igor Curdvanovschi
+Date: 2018-06-25 22:17:41+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/builder/CompareToBuilder.java
+  - src/test/java/org/apache/commons/lang3/builder/CompareToBuilderTest.java
+--------------------------------------------------
+Commit SHA: 214cc7fd596b575ed07a7d7c1006b46d5c75613d
+Message: replaces 'size() == 0' and 'length() == 0' with 'isEmpty()'
+
+Author: Igor Curdvanovschi
+Date: 2018-06-20 13:05:02+03:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ClassUtils.java
+  - src/main/java/org/apache/commons/lang3/LocaleUtils.java
+  - src/main/java/org/apache/commons/lang3/builder/DiffResult.java
+  - src/main/java/org/apache/commons/lang3/exception/DefaultExceptionContext.java
+  - src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+  - src/main/java/org/apache/commons/lang3/text/StrLookup.java
+  - src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java
+--------------------------------------------------
+Commit SHA: d9f1b897a28aeac97ff8d15948d3bc566021c53e
+Message: Fraction#getFraction: Replace "the the" with "the" in javadoc
+
+Author: pascalschumacher
+Date: 2018-06-16 23:12:03+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/math/Fraction.java
+--------------------------------------------------
+Commit SHA: 81ee0d062c888d8f8bcbc154cd7f0143710f458c
+Message: Extract method.
+Author: Gary Gregory
+Date: 2018-05-22 09:00:55-06:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+--------------------------------------------------
+Commit SHA: aff0fae2ec3a7d74356776c183c6986eb9eed520
+Message: SerializationUtilsTest identity assertions
+
+Replaced calls to assertTrue with a != condition with calls to
+assertNotSame calls.
+This change retains the functionality, but will produce a more
+detailed error message in case the assertion fails.
+It also (arguably) makes the test code more straight-forward.
+
+Author: Allon Mureinik
+Date: 2018-04-04 06:58:09+03:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/SerializationUtilsTest.java
+--------------------------------------------------
+Commit SHA: 5fb74a6618da0ca8b12a3346038164913a5d27d5
+Message: Rename parameter 't' to 'thread'.
+Author: Gary Gregory
+Date: 2017-12-21 08:57:29-07:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/concurrent/BasicThreadFactory.java
+--------------------------------------------------
+Commit SHA: 4f928504ea91c3c1dd43ce696acadf76624240a1
+Message: Refactor magic char.
+Author: Gary Gregory
+Date: 2017-11-10 11:31:33-07:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ObjectUtils.java
+--------------------------------------------------
+Commit SHA: 04ca0852b99af613e7db8f65ea6136bfe409d534
+Message: LANG-1358: Improve StringUtils#replace throughput
+
+Add changes.xml entry
+
+Author: pascalschumacher
+Date: 2017-10-12 19:35:15+02:00
+Files Affected:
+  - src/changes/changes.xml
+--------------------------------------------------
+Commit SHA: 5cb988334179b4f04a27c59c1e6a888db0dbfc9c
+Message: LANG-1358: Improve StringUtils#replace throughput (closes #300)
+
+Motivation:
+
+`StringUtils#replace` uses `substring` to append a String region into a
+StringBuilder. This causes useless copies, as `StringBuilder#append`
+can take start and end indexes.
+
+Modification:
+
+Use proper `StringBuilder#append` [overload](https://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html#append-java.lang.CharSequence-int-int-).
+
+Result:
+
+Based on benchmark from [JOOQ’s post](https://blog.jooq.org/2017/10/11/benchmarking-jdk-string-replace-vs-apache-commons-stringutils-replace):
+
+Benchmark Mode Cnt Score Error Units
+StringReplaceBenchmark.testFastStringReplaceLongStringOneMatch thrpt 21
+7546534,219 ± 145523,962 ops/s
+StringReplaceBenchmark.testStringUtilsReplaceLongStringOneMatch thrpt
+21 7353512,552 ± 124498,228 ops/s
+
+StringReplaceBenchmark.testFastStringReplaceLongStringSeveralMatches
+thrpt 21 5077255,810 ± 62358,937 ops/s
+StringReplaceBenchmark.testStringUtilsReplaceLongStringSeveralMatches
+thrpt 21 4108357,612 ± 92909,038 ops/s
+
+StringReplaceBenchmark.testFastStringReplaceShortStringOneMatch thrpt
+21 15911221,949 ± 541064,693 ops/s
+StringReplaceBenchmark.testStringUtilsReplaceShortStringOneMatch thrpt
+21 10677897,475 ± 491091,973 ops/s
+
+StringReplaceBenchmark.testFastStringReplaceShortStringSeveralMatches
+thrpt 21 9271742,251 ± 220150,121 ops/s
+StringReplaceBenchmark.testStringUtilsReplaceShortStringSeveralMatches
+thrpt 21 6158829,188 ± 99637,607 ops/s
+
+Author: Stephane Landelle
+Date: 2017-10-12 10:41:53+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+--------------------------------------------------
+Commit SHA: 3b6867fc25b5dbf27925fdced660553ea8289dda
+Message: Refactor "GMT" magic string.
+Author: Gary Gregory
+Date: 2017-10-09 14:44:35-06:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+--------------------------------------------------
+Commit SHA: f4bfd9c71f51fb541d0fd203f0df2e609632dc62
+Message: Refactor "GMT" magic string.
+Author: Gary Gregory
+Date: 2017-10-09 14:41:46-06:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+--------------------------------------------------
+Commit SHA: fd60085a2a3891ab6db46dd3b75e9dd67a7c734a
+Message: Refactor "GMT" magic string.
+Author: Gary Gregory
+Date: 2017-10-09 14:40:43-06:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+  - src/main/java/org/apache/commons/lang3/time/TimeZones.java
+--------------------------------------------------
+Commit SHA: 1571050a196198f336ae487ee3b6df629d3ee9da
+Message: [GitHub] commons-lang pull request #276: IntelliJ IDEA refactorings.
+Closes #276.
+Author: Jonathan Bluett-Duncan
+Date: 2017-07-12 00:09:41-07:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/CharSet.java
+  - src/main/java/org/apache/commons/lang3/CharUtils.java
+  - src/main/java/org/apache/commons/lang3/ClassUtils.java
+  - src/main/java/org/apache/commons/lang3/LocaleUtils.java
+  - src/main/java/org/apache/commons/lang3/ObjectUtils.java
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/main/java/org/apache/commons/lang3/Validate.java
+  - src/main/java/org/apache/commons/lang3/builder/CompareToBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/ReflectionToStringBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/ToStringStyle.java
+  - src/main/java/org/apache/commons/lang3/concurrent/EventCountCircuitBreaker.java
+  - src/main/java/org/apache/commons/lang3/exception/ExceptionUtils.java
+  - src/main/java/org/apache/commons/lang3/math/Fraction.java
+  - src/main/java/org/apache/commons/lang3/mutable/MutableBoolean.java
+  - src/main/java/org/apache/commons/lang3/reflect/FieldUtils.java
+  - src/main/java/org/apache/commons/lang3/reflect/TypeLiteral.java
+  - src/main/java/org/apache/commons/lang3/text/StrTokenizer.java
+  - src/main/java/org/apache/commons/lang3/time/FastDateFormat.java
+  - src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java
+  - src/main/java/org/apache/commons/lang3/tuple/Pair.java
+--------------------------------------------------
+Commit SHA: 5f0d8127579c1ce73f21daa509271c14af78b143
+Message: Replaced test with verify. Closes #72.
+
+Author: Amey Jadiye
+Date: 2017-06-23 15:11:01-07:00
+Files Affected:
+  - pom.xml
+--------------------------------------------------
+Commit SHA: d5be24a12668a94712247d31f06ef7d416b8118c
+Message: Use String#contains where possible (closes #263)
+
+Since the project defines a JDK 7 source compatibility, it's safe to use JDK 5's features.
+This patch replaces usages of String#indexOf with String#contains where possible to make the code easier to read and maintain.
+
+Author: Allon Mureinik
+Date: 2017-04-22 22:59:38+03:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionToStringBuilderExcludeTest.java
+  - src/test/java/org/apache/commons/lang3/exception/AbstractExceptionContextTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ContextedExceptionTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ContextedRuntimeExceptionTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ExceptionUtilsTest.java
+--------------------------------------------------
+Commit SHA: 8f54030347e31e0b1492fe874a1f1b67b89b836a
+Message: Replace switch statement with if-else block
+
+Author: Benedikt Ritter
+Date: 2017-04-17 12:31:34+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/LocaleUtils.java
+--------------------------------------------------
+Commit SHA: d547412bbd2a1ca56769a2bfa13b7ed9547310ca
+Message: Extract method for parsing locales from string
+
+Author: Benedikt Ritter
+Date: 2017-04-17 12:09:37+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/LocaleUtils.java
+--------------------------------------------------
+Commit SHA: 6bc8650ed456810d600feea4b80a665fb5895832
+Message: Remove test wildcard imports
+
+This patch applies the de-facto project's coding standard on the test
+files and replaces wildcard static imports with series of single
+method imports.
+
+Author: Allon Mureinik
+Date: 2017-03-14 11:45:03+02:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsInsertTest.java
+  - src/test/java/org/apache/commons/lang3/CharSequenceUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/JavaVersionTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsStartsEndsWithTest.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/builder/MultilineRecursiveToStringStyleTest.java
+  - src/test/java/org/apache/commons/lang3/concurrent/BackgroundInitializerTest.java
+  - src/test/java/org/apache/commons/lang3/exception/AbstractExceptionContextTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableBooleanTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableByteTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableDoubleTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableFloatTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableIntTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableLongTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableObjectTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableShortTest.java
+  - src/test/java/org/apache/commons/lang3/reflect/FieldUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/text/CompositeFormatTest.java
+  - src/test/java/org/apache/commons/lang3/text/ExtendedMessageFormatTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrBuilderAppendInsertTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/text/StrTokenizerTest.java
+  - src/test/java/org/apache/commons/lang3/text/WordUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/text/translate/OctalUnescaperTest.java
+  - src/test/java/org/apache/commons/lang3/text/translate/UnicodeUnpairedSurrogateRemoverTest.java
+  - src/test/java/org/apache/commons/lang3/time/DateUtilsFragmentTest.java
+  - src/test/java/org/apache/commons/lang3/time/DateUtilsRoundingTest.java
+--------------------------------------------------
+Commit SHA: 4259a706ab8641f408afc3ce224b1c0ba5a43d17
+Message: Replace tabs with spaces in DateUtils
+
+Author: Allon Mureinik
+Date: 2017-03-11 09:54:27+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/DateUtils.java
+--------------------------------------------------
+Commit SHA: 6597c196521af500feef7a02610727eafa7ec1dc
+Message: Use long literals (closes #248)
+
+This patch replaces int literals that were cast to longs (e.g.,
+"(long) 1)" with long literals (e.g., "1L"), making the code cleaner
+and easier to maintain.
+
+Author: Allon Mureinik
+Date: 2017-03-04 05:55:03+02:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsRemoveMultipleTest.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsRemoveTest.java
+  - src/test/java/org/apache/commons/lang3/RangeTest.java
+  - src/test/java/org/apache/commons/lang3/mutable/MutableLongTest.java
+--------------------------------------------------
+Commit SHA: 857e0de49293083aae6d3e6c6b76ec0755b1d0fa
+Message: Update RELEASE-NOTES.txt fix typo "vom" (closes #229)
+
+Replace `vom` by `from`.
+
+Author: stonio
+Date: 2017-01-26 15:30:28+01:00
+Files Affected:
+  - RELEASE-NOTES.txt
+--------------------------------------------------
+Commit SHA: 4733cb5b798cd72aed82a9118648b4a86c91539f
+Message: LANG-1279: Update Java requirement from Java 6 to 7
+
+replace usage of deprecated ObjectUtils#hashCode with Objects#hashCode
+
+Author: pascalschumacher
+Date: 2016-10-28 18:36:51+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java
+  - src/main/java/org/apache/commons/lang3/text/ExtendedMessageFormat.java
+--------------------------------------------------
+Commit SHA: cfdc3f767c0063224622af168e78c6b2d2c77388
+Message: LANG-1279: Update Java requirement from Java 6 to 7
+
+replace usage of deprecated ObjectUtils#equals with Objects#equals
+
+Author: pascalschumacher
+Date: 2016-10-28 18:33:40+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/concurrent/ConstantInitializer.java
+  - src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java
+  - src/main/java/org/apache/commons/lang3/tuple/Pair.java
+  - src/main/java/org/apache/commons/lang3/tuple/Triple.java
+--------------------------------------------------
+Commit SHA: 9b481a97010a19e375cf423ffe25dda1b40e0e47
+Message: LANG-1279: Update Java requirement from Java 6 to 7
+
+replace usage of deprecated ObjectUtils#toString with Objects#toString
+
+Author: pascalschumacher
+Date: 2016-10-28 18:27:55+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/main/java/org/apache/commons/lang3/text/StrBuilder.java
+--------------------------------------------------
+Commit SHA: f9cab271b3bc8c2fb6e2c51449ad3bc07e62e174
+Message: LANG-1279: Update Java requirement from Java 6 to 7
+
+use try with resources in SerializationUtils
+
+Author: pascalschumacher
+Date: 2016-10-23 22:30:00+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/SerializationUtils.java
+--------------------------------------------------
+Commit SHA: 23108b1bd90de315aed37fa3fc1f38f8a56ab9ba
+Message: LANG-1279: Update Java requirement from Java 6 to 7
+
+replace usage of deprecated ArrayUtils#isEquals with Objects#deepEquals
+
+Author: pascalschumacher
+Date: 2016-10-23 20:25:45+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/reflect/MethodUtils.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: a945ecbbdda782b51d5c2c670345fbf4dffacab7
+Message: StringUtils#replacePattern: fix source code formatting
+
+Author: pascalschumacher
+Date: 2016-10-23 19:30:38+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+--------------------------------------------------
+Commit SHA: 10325422e5a4735aa87a4d47bdb377e09fe963d2
+Message: LANG-1276: StrBuilder#replaceAll ArrayIndexOutOfBoundsException (closes #200)
+
+Avoid ArrayIndexOutOfBoundsException by keeping variable buf consistent with buffer in StrBuilder#replaceImpl.
+
+Author: Andy Klimczak
+Date: 2016-10-22 21:54:14-04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/text/StrBuilder.java
+  - src/test/java/org/apache/commons/lang3/text/StrBuilderTest.java
+--------------------------------------------------
+Commit SHA: 09686fad46d49016057bae8f02dc79f409b7bd10
+Message: Revert parts of LANG-1134 to polish the API after 3.5
+
+Author: Benedikt Ritter
+Date: 2016-09-19 11:46:19+02:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/Validate.java
+  - src/test/java/org/apache/commons/lang3/ValidateTest.java
+--------------------------------------------------
+Commit SHA: feb7ba55120feb5e3ad3f526fae7dee1b5189d9e
+Message: Replace deprecated method call
+Author: Sebb
+Date: 2016-09-18 22:16:20+01:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+--------------------------------------------------
+Commit SHA: c35a04102274b330aa833030c15f722b00062812
+Message: LANG-1199: Fix implementation of StringUtils.getJaroWinklerDistance()
+
+Replace current implementation with Jaro-Winkler distance implementation taken from Apache Lucene.
+
+Author: pascalschumacher
+Date: 2016-05-20 21:18:47+02:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 242b815437b9a988c2ce9e980295ca8a9e302e7a
+Message: LANG-1185 Add some tests for StringUtils replaceAll and replaceFirst methods
+
+Author: Loic Guibert
+Date: 2015-11-05 17:17:20+04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: b1762bd557c3d7605490e026bdf31096d83b4dde
+Message: LANG-1183 Making replacePattern/removePattern methods null safe in StringUtils
+
+Author: Loic Guibert
+Date: 2015-11-02 09:14:22+04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: a6addf94e5774f4e8fd71edbec68ff339c26e19f
+Message: Merge branch 'fix-LANG-1139'
+
+LANG-1139: Add replace by regular expression methods in StringUtils
+This closes #92 from github.
+
+Author: Loic Guibert
+Date: 2015-10-27 08:07:09+04:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: cc1aed9bdf196403c673a886bbf723101171a9bf
+Message: LANG-1057
+Micro optimization: Replace StringBuilder with String concatenation so that the compiler can better optimize the code
+
+Author: Chas Honton
+Date: 2015-07-14 21:02:49-07:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/ClassPathUtils.java
+  - src/main/java/org/apache/commons/lang3/Range.java
+  - src/main/java/org/apache/commons/lang3/math/Fraction.java
+  - src/main/java/org/apache/commons/lang3/tuple/Triple.java
+  - src/test/java/org/apache/commons/lang3/BooleanUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/StringEscapeUtilsTest.java
+--------------------------------------------------
+Commit SHA: 94faa31bcf5c4fcb20818a3a0d23ae789932d2df
+Message: refactor FastDateParser
+
+use hashmap for performance
+    break down regular expressions to per-format, allowing
+ParsePosition to get set
+    add parse with Calendar input, allowing client to set leniency
+and/or replace display names
+
+Author: Chas Honton
+Date: 2015-06-11 20:07:13-07:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/DateUtils.java
+  - src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateFormatTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParserSDFTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParserTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParser_MoreOrLessTest.java
+--------------------------------------------------
+Commit SHA: 3acffccf15027bcf87e25a432f085c45e103b0ec
+Message: LANG-1139: Add null safe methods in StringUtils to replace by regular expression :
+  - StringUtils.replaceAll(String, String, String)
+  - StringUtils.replaceFirst(String, String, String)
+
+Author: Loic Guibert
+Date: 2015-05-28 16:20:14+04:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 061450a927ba1cc65f7b984f4ff41866ec2eceac
+Message: incorporated feedback from Fabian, formatting adjusted, count >> 1 replaced with count / 2
+
+Author: Hendrik Saly
+Date: 2015-05-04 21:22:33+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ThreadUtils.java
+  - src/test/java/org/apache/commons/lang3/ThreadUtilsTest.java
+--------------------------------------------------
+Commit SHA: 06506aecf9e46441d08edab311e19e599d273fab
+Message: tabs replaced by spaces
+new tests added
+Author: beradrian
+Date: 2015-03-23 13:06:03+02:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ArrayUtils.java
+  - src/test/java/org/apache/commons/lang3/ArrayUtilsTest.java
+--------------------------------------------------
+Commit SHA: 2ed96f00f724c3331d6b56b6b5650b9632f43954
+Message: Refactored test into separate class, to avoid needless repeated execution by subclasses of the original test.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1673049 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Duncan Jones
+Date: 2015-04-12 19:59:04+00:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/time/FastDateParserTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParser_TimeZoneStrategyTest.java
+--------------------------------------------------
+Commit SHA: 2f62425c31dca0435c756e51289a5fc9dbaa5a94
+Message: Further optimization of LANG-935:
+- Avoid toString of the replacement sequence by doing it once.
+- Avoid calculating the maximum when not needed.
+- Fixup comment for greedy algorithm
+
+Thanks to Fabian Lange.
+
+
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1669520 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Benedikt Ritter
+Date: 2015-03-27 08:03:41+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/text/translate/LookupTranslator.java
+--------------------------------------------------
+Commit SHA: 8bc91a95f9b058a0798e3c775c14b12e82c3f4f5
+Message: replace tabs with spaces
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1668515 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Chas Honton
+Date: 2015-03-23 05:04:46+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+  - src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParserTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDatePrinterTest.java
+--------------------------------------------------
+Commit SHA: 63f1d6b83bc10a2880f5ec17a172fab284d2eff5
+Message: LANG-1055: StrSubstitutor.replaceSystemProperties does not work consistently. This fixes #43 from github. Thanks to Jonathan Baker.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1654134 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Benedikt Ritter
+Date: 2015-01-23 08:10:24+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/text/StrLookup.java
+  - src/test/java/org/apache/commons/lang3/text/StrLookupTest.java
+--------------------------------------------------
+Commit SHA: c5332828bde1cc98dfa7a00f65a05bec51ede088
+Message: LANG-1071: Fix wrong examples in JavaDoc of StringUtils.replaceEachRepeatedly(...), StringUtils.replaceEach(...). Thanks to Arno Noordover.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1648067 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Benedikt Ritter
+Date: 2014-12-27 16:45:42+00:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+--------------------------------------------------
+Commit SHA: 52e854e3bda9f1b92471884888f430345f73eca2
+Message: Replaced private integer constants with private static enum.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1627974 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Duncan Jones
+Date: 2014-09-27 15:03:26+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/DateUtils.java
+--------------------------------------------------
+Commit SHA: c9e3793ae7ed0cb7fe9ce3b217a50384526b8deb
+Message: Refactor commons constants (no need to generate new arrays on every call).
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1606073 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2014-06-27 12:52:37+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/Conversion.java
+--------------------------------------------------
+Commit SHA: 3efd6ccdbf1131b8d0b2677cbbdb41d7a23929f0
+Message: Refactor magic number into constant.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1586293 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2014-04-10 13:15:20+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/CharSequenceUtils.java
+--------------------------------------------------
+Commit SHA: 513347342acccc840acfe8a6a24bc727f861e68a
+Message: Replace tabs with whitespaces
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1572845 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Benedikt Ritter
+Date: 2014-02-28 07:44:50+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+--------------------------------------------------
+Commit SHA: 19714df228d6bbc69d86f01428ea2c6976f7c50d
+Message: Replace old comment with one that really explains the property
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1556856 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Benedikt Ritter
+Date: 2014-01-09 16:10:04+00:00
+Files Affected:
+  - src/release-tools/build.properties.sample
+--------------------------------------------------
+Commit SHA: 4660148be3bffbaf6490ebb80fb5dcf90a32b44d
+Message: Minor code optimizations:
+* removed boxing
+* removed unused variables
+* removed useless casts* removed boxing
+* removed unused variables
+* removed useless casts
+* replaced asArrayList method with Arrays.asList
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1544770 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Maurizio Cucchiara
+Date: 2013-11-23 11:11:28+00:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/reflect/FieldUtilsTest.java
+--------------------------------------------------
+Commit SHA: b35b6c576211b96abecb05655d448be3441c117c
+Message: Add FindBugs exclusion for replacement of deprecated method
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1535124 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Benedikt Ritter
+Date: 2013-10-23 19:15:54+00:00
+Files Affected:
+  - findbugs-exclude-filter.xml
+--------------------------------------------------
+Commit SHA: abc5dda962fe00fba27f98807ca70439a37a3746
+Message: [LANG-893] StrSubstitutor now supports the declaration of default values for the variables to be replaced. Thanks to Woonsan Ko for the patch.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1524541 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Oliver Heger
+Date: 2013-09-18 19:35:16+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/text/StrSubstitutor.java
+  - src/test/java/org/apache/commons/lang3/text/StrSubstitutorTest.java
+--------------------------------------------------
+Commit SHA: 909630731f3a9ee5ca756a99cdaf630a43a732cb
+Message: JUnit 3 -> 4: replace import of junit.framework.Assert with org.junit.Assert.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1437526 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2013-01-23 16:05:20+00:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/CharSequenceUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/SystemUtilsTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionToStringBuilderConcurrencyTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ReflectionToStringBuilderExcludeTest.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateParserTest.java
+  - src/test/java/org/apache/commons/lang3/time/StopWatchTest.java
+--------------------------------------------------
+Commit SHA: f5a83bb90cf7b318ac72823e6b99d01d060abe41
+Message: LANG-856 Code refactoring in NumberUtils
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1408713 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Sebastian Bazley
+Date: 2012-11-13 13:21:37+00:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+--------------------------------------------------
+Commit SHA: 8fc7c1fe06e53a7fa48f26f2340326bc06185bc6
+Message: Refactor some duplicate code.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1406122 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2012-11-06 13:12:12+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java
+--------------------------------------------------
+Commit SHA: f7a8fa91ea59b0c05c8a276bf2c23d4b2d8801eb
+Message: [LANG-841] Add StringUtils API to call String.replaceAll in DOTALL a.k.a. single-line mode.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1396375 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2012-10-09 22:07:08+00:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 17910d3cc76cb2a7babe674b03fc81132d305732
+Message: LANG-839 ArrayUtils removeElements methods use unnecessary HashSet
+Replace HashSet with BitSet (less memory; faster)
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1395837 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Sebastian Bazley
+Date: 2012-10-09 01:26:13+00:00
+Files Affected:
+  - src/changes/changes.xml
+  - src/main/java/org/apache/commons/lang3/ArrayUtils.java
+--------------------------------------------------
+Commit SHA: 204346f7544640a8c4b97677aca0d00ccd79b12e
+Message: Eat own dog food: StringUtils#isEmpty(String) and replace some but not all String#length() == 0 with String#isEmpty()
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1299411 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2012-03-11 17:55:29+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/CharSetUtils.java
+  - src/main/java/org/apache/commons/lang3/ClassUtils.java
+  - src/main/java/org/apache/commons/lang3/LocaleUtils.java
+  - src/main/java/org/apache/commons/lang3/exception/ExceptionUtils.java
+  - src/main/java/org/apache/commons/lang3/text/StrMatcher.java
+  - src/main/java/org/apache/commons/lang3/text/StrTokenizer.java
+  - src/test/java/org/apache/commons/lang3/LocaleUtilsTest.java
+--------------------------------------------------
+Commit SHA: 2e30bec7af9ab1ba7fdccd92a2ccf209fba19f32
+Message: Rolling back r1161378. NullComparator and ReverseComparator need the NATURAL_COMPARATOR field and the ComparableComparator.INSTANCE field is not a straight replacement
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1161605 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2011-08-25 15:27:39+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/compare/ComparatorUtils.java
+--------------------------------------------------
+Commit SHA: 11425c7892db46c01edcb78929c283ff21288f5a
+Message: Replace non-ASCII hyphen with ASCII version
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1157551 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Sebastian Bazley
+Date: 2011-08-14 15:35:16+00:00
+Files Affected:
+  - src/test/java/org/apache/commons/lang3/StringEscapeUtilsTest.java
+--------------------------------------------------
+Commit SHA: a7fe1f5018c53ed3af8af0d404a346117aefb958
+Message: Improving error message when recursion fails TTL in replaceEachRepeatedly. LANG-686
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1151345 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2011-07-27 06:02:06+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+--------------------------------------------------
+Commit SHA: 85d6318351fefbb728bad2db16103dc24372240d
+Message: Fixing javadoc. The replaceEachRepeatedly does in fact repeat. Related to LANG-686
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1151340 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2011-07-27 05:55:39+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+--------------------------------------------------
+Commit SHA: 6be2343397b8192fc1328da21962dea27a8b2422
+Message: Refactor ExceptionContext and derived. Context contract stipulates a sequence of label-value entries with support for multiple entries for the same label.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1143612 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Joerg Schaible
+Date: 2011-07-06 23:54:57+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/exception/ContextedException.java
+  - src/main/java/org/apache/commons/lang3/exception/ContextedRuntimeException.java
+  - src/main/java/org/apache/commons/lang3/exception/DefaultExceptionContext.java
+  - src/main/java/org/apache/commons/lang3/exception/ExceptionContext.java
+  - src/test/java/org/apache/commons/lang3/exception/AbstractExceptionContextTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ContextedExceptionTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ContextedRuntimeExceptionTest.java
+  - src/test/java/org/apache/commons/lang3/exception/DefaultExceptionContextTest.java
+--------------------------------------------------
+Commit SHA: c1cb131f71d924633ddd6a0a2ba9d46cc193ce85
+Message: Adding comment on refactoring of API before making it public
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1131309 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2011-06-04 02:44:27+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/FormatCache.java
+--------------------------------------------------
+Commit SHA: 0ad6c30b0ed57cd0a5a3c18725926570b4032db8
+Message: Refactor Range with lots of new methods
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1127565 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2011-05-25 15:43:35+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/Range.java
+  - src/test/java/org/apache/commons/lang3/RangeTest.java
+--------------------------------------------------
+Commit SHA: 10e83fc8e6503a44d8b971db1aa2596848e9d282
+Message: Eat own dog food: Replace "" with StringUtils.EMPTY.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1095935 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2011-04-22 13:51:53+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/util/FormattableUtils.java
+--------------------------------------------------
+Commit SHA: 9ef322c33c465d8ae9a1d854dfa977f47f629009
+Message: Refactoring FastDateFormat per LANG-462 to use the FormatCache class created for an upcoming DateParser functionality. I've kept FormatCache package-private for now. 
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1095299 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2011-04-20 06:51:16+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/time/FastDateFormat.java
+  - src/main/java/org/apache/commons/lang3/time/FormatCache.java
+  - src/test/java/org/apache/commons/lang3/time/FastDateFormatTest.java
+--------------------------------------------------
+Commit SHA: 8256dbef70e46559c7789be92c0a74dcf62d37e8
+Message: Refactor all 3 three Pair classes from o.a.c.l to o.a.c.l.tuple.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1091531 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2011-04-12 18:29:49+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/ImmutablePair.java
+  - src/main/java/org/apache/commons/lang3/MutablePair.java
+  - src/main/java/org/apache/commons/lang3/Pair.java
+  - src/main/java/org/apache/commons/lang3/builder/EqualsBuilder.java
+  - src/main/java/org/apache/commons/lang3/tuple/ImmutablePair.java
+  - src/main/java/org/apache/commons/lang3/tuple/MutablePair.java
+  - src/main/java/org/apache/commons/lang3/tuple/Pair.java
+  - src/main/java/org/apache/commons/lang3/tuple/package.html
+  - src/test/java/org/apache/commons/lang3/ImmutablePairTest.java
+  - src/test/java/org/apache/commons/lang3/MutablePairTest.java
+  - src/test/java/org/apache/commons/lang3/PairTest.java
+  - src/test/java/org/apache/commons/lang3/tuple/ImmutablePairTest.java
+  - src/test/java/org/apache/commons/lang3/tuple/MutablePairTest.java
+  - src/test/java/org/apache/commons/lang3/tuple/PairTest.java
+--------------------------------------------------
+Commit SHA: 85b9694d48340fcfaa7b4377e4e1ecd66e8c6c85
+Message: javadoc refactoring + many @code tags
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@1083833 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Matthew Jason Benson
+Date: 2011-03-21 15:29:45+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/AnnotationUtils.java
+--------------------------------------------------
+Commit SHA: f7f19a3d2f98f48924d38fec2308dc3db83445d8
+Message: Adding Ulrich + Tomas' patch to LANG-596 adding a replace(String, Properties) variant to StrSubstitutor
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@990671 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2010-08-29 22:53:42+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/text/StrSubstitutor.java
+  - src/test/java/org/apache/commons/lang3/text/StrSubstitutorTest.java
+--------------------------------------------------
+Commit SHA: e51c8d6cfbfb7ee3129ab0d047ae22910ca9f6c6
+Message: move/comment SuppressWarnings(unchecked)/refactor surrounding code
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@983709 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Matthew Jason Benson
+Date: 2010-08-09 16:20:54+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/reflect/ConstructorUtils.java
+--------------------------------------------------
+Commit SHA: d482154d50993bf0b78dfd59f7e874a20604efc3
+Message: Refactoring toBoolean(String) and toBooleanObject(String) so that the latter has the same optimizations. I did this by pointing the former to the latter. I had to rewrite the optimizations a bit so they didn't auto-return as the latter considers null and false to be different. I also had to add specific support for false, no and off for the same reason. LANG-633
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@965963 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2010-07-20 19:10:34+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/BooleanUtils.java
+  - src/test/java/org/apache/commons/lang3/BooleanUtilsTest.java
+--------------------------------------------------
+Commit SHA: b24ecd60fe9517bef1d6342e479e9bc3d85ef692
+Message: - Fix (LANG-624) SystemUtils.getJavaVersionAsFloat throws StringIndexOutOfBoundsException on Android runtime/Dalvik VM
+- Refactor for unit testing.
+- Remove odd test code which is copy and pasted from SystemUtils, which therefore does not test anything.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@949140 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2010-05-28 10:12:04+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/SystemUtils.java
+  - src/test/java/org/apache/commons/lang3/SystemUtilsTest.java
+--------------------------------------------------
+Commit SHA: bc22af91e7e8fd7a530de48cd164056ef05829e0
+Message: Adding Builder interface, and refactoring the builder classes and BasicThreadFactory to implement this interface. Patch from Michael Wooten in LANG-601
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@925674 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2010-03-20 20:20:26+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/builder/Builder.java
+  - src/main/java/org/apache/commons/lang3/builder/CompareToBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/EqualsBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/HashCodeBuilder.java
+  - src/main/java/org/apache/commons/lang3/builder/ToStringBuilder.java
+  - src/main/java/org/apache/commons/lang3/concurrent/BasicThreadFactory.java
+  - src/test/java/org/apache/commons/lang3/builder/CompareToBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/EqualsBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/HashCodeBuilderTest.java
+  - src/test/java/org/apache/commons/lang3/builder/ToStringBuilderTest.java
+--------------------------------------------------
+Commit SHA: 022d08cfd31475073c664da109ad50bfe9539d82
+Message: Fix DefaultExceptionContext.addValue that overwrites information in a recursive situation (LANG-605). Allow explicit replacement of a label with the new replaceValue methods.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@923341 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Joerg Schaible
+Date: 2010-03-15 17:11:55+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/exception/ContextedException.java
+  - src/main/java/org/apache/commons/lang3/exception/ContextedRuntimeException.java
+  - src/main/java/org/apache/commons/lang3/exception/DefaultExceptionContext.java
+  - src/main/java/org/apache/commons/lang3/exception/ExceptionContext.java
+  - src/test/java/org/apache/commons/lang3/exception/ContextedExceptionTest.java
+  - src/test/java/org/apache/commons/lang3/exception/ContextedRuntimeExceptionTest.java
+  - src/test/java/org/apache/commons/lang3/exception/DefaultExceptionContextTest.java
+--------------------------------------------------
+Commit SHA: a2bb711aee6621b21cdd22e6d7e4bff2f7236235
+Message: [LANG-586] part 2: refactor ToStringStyle and ToStringBuilderTest to verify that we are unsetting the registry when no longer needed
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@906676 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Matthew Jason Benson
+Date: 2010-02-04 21:57:58+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/builder/ToStringStyle.java
+  - src/test/java/org/apache/commons/lang3/builder/ToStringBuilderTest.java
+--------------------------------------------------
+Commit SHA: 9143987fa02cb1d4be45b175fd7eb7b748fffb7b
+Message: LANG-405 rename method from truncateMiddle() to abbreviateMiddle()
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@901815 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Niall Pemberton
+Date: 2010-01-21 18:22:15+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/test/java/org/apache/commons/lang3/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: d918999ddd415964ddebb4386f0acad7820a6848
+Message: Replace tab characters with spaces
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@901804 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Niall Pemberton
+Date: 2010-01-21 17:59:51+00:00
+Files Affected:
+  - src/main/java/org/apache/commons/lang3/StringUtils.java
+  - src/main/java/org/apache/commons/lang3/Validate.java
+  - src/main/java/org/apache/commons/lang3/time/DateUtils.java
+--------------------------------------------------
+Commit SHA: 56550bf2779990da78d2bac1d8287c8a693c6e4b
+Message: Applying fix for LANG-552. StringUtils.replaceEach(String, String[], String[]) no longer NPEs when null appears in the last String[]
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@890212 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2009-12-14 07:51:05+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang3/StringUtils.java
+  - src/test/org/apache/commons/lang3/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 0714795b6fd29dd895d65a6e7397ee7f768cb1bf
+Message: Removing the EscapeUtils/UnescapeUtils classes, and making StringEscapeUtils the replacement. Writer variants of StringEscapeUtils are dropped - instead you hit those via the translator objects. Some javadoc/testing cleanup needed. 
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@881197 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2009-11-17 08:45:55+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringEscapeUtils.java
+  - src/java/org/apache/commons/lang/text/translate/EscapeUtils.java
+  - src/java/org/apache/commons/lang/text/translate/UnescapeUtils.java
+  - src/test/org/apache/commons/lang/StringEscapeUtilsTest.java
+  - src/test/org/apache/commons/lang/text/translate/EscapeUtilsTest.java
+  - src/test/org/apache/commons/lang/text/translate/UnescapeUtilsTest.java
+--------------------------------------------------
+Commit SHA: 56e830a235ffdf79af12f8afa07a210aba3cab26
+Message: Removing old Range classes per LANG-551. New lang.Range class replaces these
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@835780 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2009-11-13 08:54:04+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/math/DoubleRange.java
+  - src/java/org/apache/commons/lang/math/FloatRange.java
+  - src/java/org/apache/commons/lang/math/IntRange.java
+  - src/java/org/apache/commons/lang/math/LongRange.java
+  - src/java/org/apache/commons/lang/math/NumberRange.java
+  - src/java/org/apache/commons/lang/math/Range.java
+  - src/test/org/apache/commons/lang/math/AbstractRangeTest.java
+  - src/test/org/apache/commons/lang/math/DoubleRangeTest.java
+  - src/test/org/apache/commons/lang/math/FloatRangeTest.java
+  - src/test/org/apache/commons/lang/math/IntRangeTest.java
+  - src/test/org/apache/commons/lang/math/LongRangeTest.java
+  - src/test/org/apache/commons/lang/math/NumberRangeTest.java
+  - src/test/org/apache/commons/lang/math/RangeTest.java
+--------------------------------------------------
+Commit SHA: ff1102d68d29d60b1215a723821bbee194c97fa0
+Message: Committing work in progress version of a new Range class to replace the math.*Range classes as discussed in LANG-551
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@833308 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2009-11-06 07:56:22+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/Range.java
+  - src/test/org/apache/commons/lang/RangeTest.java
+--------------------------------------------------
+Commit SHA: 51a130b544000a8a7fe02ccc3bd44bf6e5051a22
+Message: Applying patch from Vincent Ricard in LANG-514. CharRange constructors removed and replaced with readable static builder methods
+
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@829282 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2009-10-23 23:59:02+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/CharRange.java
+  - src/java/org/apache/commons/lang/CharSet.java
+  - src/test/org/apache/commons/lang/CharRangeTest.java
+  - src/test/org/apache/commons/lang/CharSetTest.java
+--------------------------------------------------
+Commit SHA: 784e93e61dc5ee66e5d47d8c8dd09294df6df145
+Message: Refactoring the array of Java ctrl characters to be in EntityArray rather than embedded in their own escape/unescape
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@795596 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2009-07-19 19:15:14+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/text/translate/EntityArrays.java
+  - src/java/org/apache/commons/lang/text/translate/EscapeUtils.java
+  - src/java/org/apache/commons/lang/text/translate/UnescapeUtils.java
+--------------------------------------------------
+Commit SHA: 275f3fa08833551c4bb23030e8599d64aa81bec9
+Message: Refactoring to avoid code duplication - LANG-458
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@788275 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2009-06-25 06:58:11+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/Validate.java
+--------------------------------------------------
+Commit SHA: d85758d68870e524fb62e68957f1eb2fff6c3fae
+Message: LANG-438 - replace links to Javadoc that was deleted with the deprecated methods
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@754677 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Sebastian Bazley
+Date: 2009-03-15 15:06:03+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/CharSetUtils.java
+--------------------------------------------------
+Commit SHA: eaac4a7df7d6180ad8aeb7d39471b97a4ca6646e
+Message: Replace deprecated method call
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@754537 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Sebastian Bazley
+Date: 2009-03-14 21:54:00+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/builder/ToStringBuilder.java
+  - src/java/org/apache/commons/lang/builder/ToStringStyle.java
+--------------------------------------------------
+Commit SHA: 3b03f6a0ad3e6002e7b462ff63faceb1fe8a0871
+Message: Oops - accidentally removed some lines in r753655. Replaced.
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@754460 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Sebastian Bazley
+Date: 2009-03-14 15:18:22+00:00
+Files Affected:
+  - src/test/org/apache/commons/lang/builder/ToStringBuilderTest.java
+--------------------------------------------------
+Commit SHA: ee0405b407bf2b55ef519d8d30a6facad7cfee27
+Message: Make formatting consistent across the file:
+Replace "methodcall( expr )" with "methodcall(expr)".
+Replace "type foo = (expr)" with "type foo = expr".
+Replace "if(expr)" with "if (expr)"
+
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@632503 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2008-03-01 00:21:52+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/ArrayUtils.java
+--------------------------------------------------
+Commit SHA: 5cbca4d5f5a2acfc92670e2bbe46491c442c4234
+Message: LANG-410 - Ambiguous / confusing names in StringUtils replace* methods
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@627588 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Sebastian Bazley
+Date: 2008-02-13 20:41:07+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+--------------------------------------------------
+Commit SHA: 3b7ca1d4a2269a1a3abcc304c7d2bf5474ae19f0
+Message: Applying my modified version of Chris Hyzer's patch from LANG-180 - adding a replaceEach(String, String[], String[]) and replaceRepeatedly(String, String[], String[]) pair of methods. The internal code to the private replaceEach method has not been fully reviewed yet - I wanted to get more eyes focused on the algorithm
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@616170 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2008-01-29 05:33:17+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 85dda0d25a38d7a2ce815c042a7eb3e0b905addd
+Message: Applying the Date.setXxx replacement methods that use Calendar as supplied by Travis Meisenheimer in LANG-383
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@610668 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2008-01-10 04:41:22+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/time/DateUtils.java
+  - src/test/org/apache/commons/lang/time/DateUtilsTest.java
+--------------------------------------------------
+Commit SHA: 55817e22332cfcb26238eecdf6643dada5d3c527
+Message: [LANG-362] checkstyle; javadoc; extended testing which necessitated some refactorings
+
+git-svn-id: https://svn.apache.org/repos/asf/commons/proper/lang/trunk@598707 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Matthew Jason Benson
+Date: 2007-11-27 17:27:35+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/text/ChoiceMetaFormat.java
+  - src/java/org/apache/commons/lang/text/CompositeFormat.java
+  - src/java/org/apache/commons/lang/text/DateMetaFormat.java
+  - src/java/org/apache/commons/lang/text/DateMetaFormatSupport.java
+  - src/java/org/apache/commons/lang/text/DefaultMetaFormatFactory.java
+  - src/java/org/apache/commons/lang/text/ExtendedMessageFormat.java
+  - src/java/org/apache/commons/lang/text/MetaFormatSupport.java
+  - src/java/org/apache/commons/lang/text/MultiFormat.java
+  - src/java/org/apache/commons/lang/text/NameKeyedMetaFormat.java
+  - src/java/org/apache/commons/lang/text/NumberMetaFormat.java
+  - src/java/org/apache/commons/lang/text/TimeMetaFormat.java
+  - src/test/org/apache/commons/lang/text/AbstractMessageFormatTest.java
+  - src/test/org/apache/commons/lang/text/ExtendedMessageFormatBaselineTest.java
+  - src/test/org/apache/commons/lang/text/MessageFormatExtensionTest.java
+  - src/test/org/apache/commons/lang/text/MessageFormatTest.java
+  - src/test/org/apache/commons/lang/text/TextTestSuite.java
+--------------------------------------------------
+Commit SHA: 0e07a3b09931406bfbd7653182b937d8e23d2d66
+Message: [LANG-102] [lang] Refactor Entities methods.
+http://issues.apache.org/jira/browse/LANG-102.
+Refactored escape and unescape methods to remove code duplication.
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@491695 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2007-01-01 23:24:27+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/Entities.java
+--------------------------------------------------
+Commit SHA: 94530f113eca2f7612a0d5729e894038b32361fb
+Message: Refactored duration tests to make it simpler to add new ones. Added a few edge cases to test the replacement for the += 31 code
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@454427 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2006-10-09 16:57:28+00:00
+Files Affected:
+  - src/test/org/apache/commons/lang/time/DurationFormatUtilsTest.java
+--------------------------------------------------
+Commit SHA: 5fa96c51b0f4de93cef07558ae56b05c9fb14ba9
+Message: Enhance StrSubtstitutor with StringBuffer methods and replaceIn() methods
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@430176 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2006-08-09 22:52:45+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/text/StrSubstitutor.java
+  - src/test/org/apache/commons/lang/text/StrSubstitutorTest.java
+--------------------------------------------------
+Commit SHA: df326b1747a1cdf22d7de65290559d1e160c96f7
+Message: Rename variable for JDK1.5 compliance
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@429876 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2006-08-08 23:24:49+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/enum/ValuedEnum.java
+--------------------------------------------------
+Commit SHA: 3eebd98b548fc960a7cd9d14eb0771b14615e9a1
+Message: Replace internal use of the magic number -1 with a new constant INDEX_NOT_FOUND. Javadoc changes: Use the active voice "Finds..." (was "Find..."), mention INDEX_NOT_FOUND, and other minor Javadoc nit picking.
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@394613 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2006-04-17 06:06:52+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/ArrayUtils.java
+--------------------------------------------------
+Commit SHA: 4e74f83aad4f7caf8da19bd442e4b9724bfd74e4
+Message: Replace LinkedList with more efficient ArrayList
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@366620 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2006-01-07 01:16:52+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/exception/ExceptionUtils.java
+--------------------------------------------------
+Commit SHA: 39c9476337d69f34cb1ace57067f0d2a009785a6
+Message: Refactored getClass() to support spaces in class names.
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@345284 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: James W. Carman
+Date: 2005-11-17 16:51:02+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/ClassUtils.java
+  - src/test/org/apache/commons/lang/ClassUtilsTest.java
+--------------------------------------------------
+Commit SHA: 7c818a9f2236088580c8b963c662e6c541f71b0e
+Message: Optimize the performance of StringUtils.replace
+bug 36583, from Chris Hyzer
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@279977 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2005-09-10 09:29:48+00:00
+Files Affected:
+  - project.xml
+  - src/java/org/apache/commons/lang/StringUtils.java
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: adf32bb9ffb7138c4fcc4a35451a89ede9568c63
+Message: Refactor multiple instances of the same string literal into a default message string static.
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@239739 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2005-08-24 19:37:48+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/NotImplementedException.java
+--------------------------------------------------
+Commit SHA: a5311d05afc8dfc2983c9c8e932216195f09de82
+Message: Remove StrTokenizer.Matcher, replace with StrMatcher
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@232878 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2005-08-15 20:58:23+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/text/StrTokenizer.java
+  - src/java/org/apache/commons/lang/text/VariableFormatter.java
+  - src/test/org/apache/commons/lang/text/StrTokenizerTest.java
+--------------------------------------------------
+Commit SHA: 1c57bb797df0b1915bf3c7686f3082657397ec5d
+Message: Replaced VariableFormatter.Token with java.text.FieldPosition.
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@231330 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2005-08-10 21:21:52+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/text/VariableFormatter.java
+--------------------------------------------------
+Commit SHA: e4812f52ba44f7284851ebf19107f89f27ec8b0e
+Message: Integrate and tweak http://issues.apache.org/bugzilla/show_bug.cgi?id=35588.
+Next: Try and replace VariableFormatter.Token with java.text.FieldPosition.
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@231316 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2005-08-10 20:36:26+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/text/VariableFormatter.java
+  - src/test/org/apache/commons/lang/text/VariableFormatterTest.java
+--------------------------------------------------
+Commit SHA: 2a760cb9d516b2d8ad8eb9034d960d60e7769a8a
+Message: Replace unnecessary else in if/else's with if guard clause.
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@226598 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2005-07-31 01:19:22+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/text/StrBuilder.java
+--------------------------------------------------
+Commit SHA: cdb9168538e2f01e3737e118baab9450076ca360
+Message: Removes Interpolation and MappedMessageFormat from the text package in favor of VariableFormatter. (See message below) No one has complained on commons-dev.
+
+-----Original Message-----
+From: Gary Gregory [mailto:ggregory@seagullsoftware.com] 
+Sent: Thursday, July 21, 2005 9:34 AM
+To: Jakarta Commons Developers List
+Subject: [lang] text.VariableFormatter to replace Interpolation and MappedMessageFormat (WAS a [POLL])
+
+Hello:
+
+It's been two weeks since I posted the original message below and I've
+not heard negative comments on removing Interpolation and
+MappedMessageFormat from the text package in favor of VariableFormatter.
+I will therefore do so real soon. 
+
+Please raise your hand you disagree.
+
+Thanks,
+Gary
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@224558 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2005-07-23 21:56:59+00:00
+Files Affected:
+  - src/test/org/apache/commons/lang/text/InterpolationTest.java
+  - src/test/org/apache/commons/lang/text/TextTestSuite.java
+--------------------------------------------------
+Commit SHA: 7952a5525444ab03243a9f80375050caf2419770
+Message: Removes Interpolation and MappedMessageFormat from the text package in favor of VariableFormatter. (See message below) No one has complained on commons-dev.
+
+-----Original Message-----
+From: Gary Gregory [mailto:ggregory@seagullsoftware.com] 
+Sent: Thursday, July 21, 2005 9:34 AM
+To: Jakarta Commons Developers List
+Subject: [lang] text.VariableFormatter to replace Interpolation and MappedMessageFormat (WAS a [POLL])
+
+Hello:
+
+It's been two weeks since I posted the original message below and I've
+not heard negative comments on removing Interpolation and
+MappedMessageFormat from the text package in favor of VariableFormatter.
+I will therefore do so real soon. 
+
+Please raise your hand you disagree.
+
+Thanks,
+Gary
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@224556 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2005-07-23 21:48:28+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/text/Interpolation.java
+  - src/java/org/apache/commons/lang/text/MappedMessageFormat.java
+--------------------------------------------------
+Commit SHA: 015b77e3ea780f7f5fe6bd8c1b1abfdec13353d2
+Message: Refactor unit test fork attribute in a default.properties property named "test.fork", default is true, as in the build.xml file.
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@178721 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2005-05-27 00:42:00+00:00
+Files Affected:
+  - build.xml
+  - default.properties
+--------------------------------------------------
+Commit SHA: a22cada5148c895e750f576163338109b97bb70c
+Message: Replace the Javadoc pattern "A Matcher which matches the XXX character." with "Matches the XXX character.". (A matcher matches of course ;-) Use the active voice or “third-person verb form”, I only know it is called the “third-person verb form” because I read it in the most excellent tiny little book “The Elements of Java Style”.)
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@165694 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2005-05-02 21:16:58+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/text/StrTokenizer.java
+--------------------------------------------------
+Commit SHA: 887d935024ec45d4c22c2676c0c2972c39462fc8
+Message: In the .text package (not for 2.1):
+- Javadoc nits: missing tags, wrong name in @param, "." in 1st line.
+- Refactored magic number "32" into static final "CAPACITY".
+- Removed extra C-style "return (expr)" in return expressions.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@160943 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2005-04-11 20:11:40+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/text/Interpolation.java
+  - src/java/org/apache/commons/lang/text/MappedMessageFormat.java
+  - src/java/org/apache/commons/lang/text/StrBuilder.java
+  - src/java/org/apache/commons/lang/text/StrTokenizer.java
+--------------------------------------------------
+Commit SHA: d5095df781adbbe9a663fcb4c24c9d4471b1e13c
+Message: Two items:
+
+(1) Allow the Java 1.5 to be used to build by adding:
+
+# Specifies the source version for the Java compiler.
+# Corresponds to the source attribute for the ant javac task.
+# Valid values are 1.3, 1.4, 1.5.
+compile.source = 1.3
+
+(2) Refactor the multiple use of the javac/target="1.1" into a build property:
+
+# Generate class files for specific VM version (e.g., 1.1 or 1.2).
+# Note that the default value depends on the JVM that is running Ant.
+# In particular, if you use JDK 1.4+ the generated classes will not be usable
+# for a 1.1 Java VM unless you explicitly set this attribute to the value 1.1
+# (which is the default value for JDK 1.1 to 1.3).
+compile.target = 1.1
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137990 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2004-10-21 00:21:39+00:00
+Files Affected:
+  - build.xml
+  - default.properties
+--------------------------------------------------
+Commit SHA: ef8f9c98428dfea1f9134f48c9f88fccc625dd7d
+Message: Javadoc: Replace some HTML anchor hrefs with Javadoc @link and other nits.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137949 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2004-09-30 17:24:47+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/builder/package.html
+  - src/java/org/apache/commons/lang/enum/Enum.java
+  - src/java/org/apache/commons/lang/enum/EnumUtils.java
+  - src/java/org/apache/commons/lang/enum/ValuedEnum.java
+  - src/java/org/apache/commons/lang/enum/package.html
+  - src/java/org/apache/commons/lang/enums/Enum.java
+  - src/java/org/apache/commons/lang/math/package.html
+  - src/java/org/apache/commons/lang/package.html
+--------------------------------------------------
+Commit SHA: ad4bde97cd40bb1df614c65206902e887a0a1b09
+Message: Refactor "Windows" into private static final String OS_NAME_WINDOWS_PREFIX = "Windows";
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137908 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2004-08-30 21:19:52+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/SystemUtils.java
+--------------------------------------------------
+Commit SHA: f919d930401b3b1b7d41cf5455f649e6d9708717
+Message: http://issues.apache.org/bugzilla/show_bug.cgi?id=22692 :
+- added new splitPreserveAllTokens methods to mirror the split functionality, preserving empty tokens indicated by adjacent tokens;
+- refactored logic of existing split method into splitWorker for sharing by new splitPreserveAllTokens methods
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137875 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Steven Caswell
+Date: 2004-07-11 16:48:31+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+--------------------------------------------------
+Commit SHA: 694d1de4a912dcb1baade3edfecbe6e152c12e24
+Message: Fix replaceChars() to complete bug 25454
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137826 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2004-03-10 23:54:48+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 56de34db0fd308b69c2cccedcdac41a05f039306
+Message: Copied RELEASE-NOTES.txt to RELEASE-NOTES-2.0.txt
+RELEASE-NOTES.txt now tracks an upcomming 2.1.
+lang.enum.*:
+	Deprecated and replaced by org.apache.commons.lang.enums.* and will be
+	removed in version 3.0. All classes in this package are deprecated and 
+	repackaged to org.apache.commons.lang.enums since enum is a Java 1.5 
+	keyword.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137812 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2004-02-23 04:36:06+00:00
+Files Affected:
+  - RELEASE-NOTES-2.0.txt
+  - RELEASE-NOTES.txt
+--------------------------------------------------
+Commit SHA: 4dcfc2fbb1f5bb475e94bf7ba5cc828416d7c234
+Message: 
+lang.enum.*:
+	Deprecated and replaced by org.apache.commons.lang.enums.* and will be
+	removed in version 3.0. All classes in this package are deprecated and 
+	repackaged to org.apache.commons.lang.enums since enum is a Java 1.5 
+	keyword.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137811 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2004-02-23 04:34:20+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/enum/Enum.java
+  - src/java/org/apache/commons/lang/enum/EnumUtils.java
+  - src/java/org/apache/commons/lang/enum/ValuedEnum.java
+  - src/java/org/apache/commons/lang/enum/package.html
+  - src/java/org/apache/commons/lang/enums/Enum.java
+  - src/java/org/apache/commons/lang/enums/EnumUtils.java
+  - src/java/org/apache/commons/lang/enums/ValuedEnum.java
+  - src/java/org/apache/commons/lang/enums/package.html
+  - src/test/org/apache/commons/lang/enums/Broken1Enum.java
+  - src/test/org/apache/commons/lang/enums/Broken1OperationEnum.java
+  - src/test/org/apache/commons/lang/enums/Broken2Enum.java
+  - src/test/org/apache/commons/lang/enums/Broken2OperationEnum.java
+  - src/test/org/apache/commons/lang/enums/Broken3Enum.java
+  - src/test/org/apache/commons/lang/enums/Broken3OperationEnum.java
+  - src/test/org/apache/commons/lang/enums/Broken4OperationEnum.java
+  - src/test/org/apache/commons/lang/enums/Broken5OperationEnum.java
+  - src/test/org/apache/commons/lang/enums/ColorEnum.java
+  - src/test/org/apache/commons/lang/enums/DummyEnum.java
+  - src/test/org/apache/commons/lang/enums/EnumTest.java
+  - src/test/org/apache/commons/lang/enums/EnumTestSuite.java
+  - src/test/org/apache/commons/lang/enums/EnumUtilsTest.java
+  - src/test/org/apache/commons/lang/enums/Extended1Enum.java
+  - src/test/org/apache/commons/lang/enums/Extended2Enum.java
+  - src/test/org/apache/commons/lang/enums/Extended3Enum.java
+  - src/test/org/apache/commons/lang/enums/Nest.java
+  - src/test/org/apache/commons/lang/enums/NestBroken.java
+  - src/test/org/apache/commons/lang/enums/NestLinked.java
+  - src/test/org/apache/commons/lang/enums/NestReferenced.java
+  - src/test/org/apache/commons/lang/enums/OperationEnum.java
+  - src/test/org/apache/commons/lang/enums/ValuedColorEnum.java
+  - src/test/org/apache/commons/lang/enums/ValuedEnumTest.java
+--------------------------------------------------
+Commit SHA: f93ddafa96d62289ad9e635136cea5524e664d43
+Message: Add comment about new Tokenizer class in split method
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137785 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2004-02-13 23:32:39+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+--------------------------------------------------
+Commit SHA: c261fa490e68cf5b38930ff66ce17216d9e45c97
+Message: Fix mistake and clarify javadoc spec for replace
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137730 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2003-12-24 01:33:30+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+--------------------------------------------------
+Commit SHA: e2225defe6055a90f1def6d0b6c177cbb22b0bc2
+Message: Deprecated integer MILLIS_IN_* constants and replaced with long versions
+named MILLIS_PER_*.
+PR # 25627
+Reported by Nikolay Metchev
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137729 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Phil Steitz
+Date: 2003-12-23 03:54:14+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/time/DateUtils.java
+  - src/java/org/apache/commons/lang/time/DurationFormatUtils.java
+--------------------------------------------------
+Commit SHA: 5aeb74f109cb97da853da30d9b9b2ab166d43add
+Message: http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25454
+StringUtils.replaceChars(String,String,String).
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137725 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2003-12-15 01:52:32+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 85d956d34c9689459f4ffbf5e1dc1f3a4ba84def
+Message: Fix javadoc of replace method
+bug 24056, from Russell Dittmar
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137688 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2003-10-23 20:40:36+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+--------------------------------------------------
+Commit SHA: 3c712f6fbbfcc5478c87e12bb3a458377834727b
+Message: replacement for checkstyle.properties
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137649 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Phil Steitz
+Date: 2003-08-22 05:01:03+00:00
+Files Affected:
+  - checkstyle.xml
+--------------------------------------------------
+Commit SHA: 47367eb9ab75a06a1b2606790813ee6cb1ed6196
+Message: Rename WordWrapUtils to WordUtils
+Refactor wrapLine method, making it public and work properly
+Remove wrapText method
+Test
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137618 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2003-08-17 21:57:37+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/WordUtils.java
+  - src/java/org/apache/commons/lang/WordWrapUtils.java
+  - src/test/org/apache/commons/lang/LangTestSuite.java
+  - src/test/org/apache/commons/lang/WordUtilsTest.java
+  - src/test/org/apache/commons/lang/WordWrapUtilsTest.java
+--------------------------------------------------
+Commit SHA: e0ccb828243b1194eff6c8af84abab80373b2375
+Message: 
+Refactor "" string literals to use the new:
+public static final String EMPTY = ""
+I made EMPTY public since I plan on using it when replacing most of our internal StringUtil class with this StringUtil.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137583 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2003-08-13 21:32:27+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: e92543334a2676436ed02bd9ff4400ec9c2a0892
+Message: Replace statics *TIMEZONE* with *TIME_ZONE*
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137577 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2003-08-06 21:13:39+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/time/DateFormatUtils.java
+  - src/java/org/apache/commons/lang/time/DateUtils.java
+  - src/test/org/apache/commons/lang/time/DateFormatUtilsTest.java
+  - src/test/org/apache/commons/lang/time/DurationFormatUtilsTest.java
+--------------------------------------------------
+Commit SHA: f085c587447f2f9b939b153fc0b1455a4d16f261
+Message: Add  overlay()  as a replacement for  overlayString()
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137551 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2003-08-01 23:01:52+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 95c2d8bbad7ac41ca6882c72bda7d0073663f01c
+Message: Add  substringBetween()  as a replacement for getNestedString()
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137550 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2003-08-01 22:05:43+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+  - src/test/org/apache/commons/lang/StringUtilsSubstringTest.java
+--------------------------------------------------
+Commit SHA: 4da8084e451787cafed959016aec814127f0c7cd
+Message: Add  join(Object[])  as a replacement for concatenate
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137549 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2003-08-01 21:02:16+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 357851bdb1830b1275221b28aee676f9860e1d8b
+Message: Add  replaceChars()  to StringUtils
+Deprecate  translate()  on CharSetUtils
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137537 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2003-07-31 20:38:26+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/CharSetUtils.java
+  - src/java/org/apache/commons/lang/StringUtils.java
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: b612cd4156b31e527d5ce1d42d55ea0a23b5eb93
+Message: In 2 places, removed local var def before return of var, replaced with actual expression. 
+This follows the other methods' code pattern.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137505 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2003-07-26 02:57:37+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/math/NumberUtils.java
+--------------------------------------------------
+Commit SHA: 30ddfad67fed59e5c61d039f0b4c5be697d8ddae
+Message: Deprecate deleteSpaces()
+Move delete methods next to replace
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137463 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2003-07-20 00:17:29+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+  - src/test/org/apache/commons/lang/StringUtilsTrimEmptyTest.java
+--------------------------------------------------
+Commit SHA: 61dd85ca2f57884672e20e232ff1a15fc1a23c73
+Message: Refactor such that the ObjectUtils.identityToString() method logic is only in ObjectUtils and not duplicated in the builder package.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137438 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2003-07-16 01:47:40+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/ObjectUtils.java
+  - src/java/org/apache/commons/lang/builder/ToStringBuilder.java
+  - src/java/org/apache/commons/lang/builder/ToStringStyle.java
+  - src/test/org/apache/commons/lang/ObjectUtilsTest.java
+--------------------------------------------------
+Commit SHA: 99a9ac4d5e67a0448bc3ed8a00b999301a3d2410
+Message: Javadoc fixes and a refactoring to use StringUtils.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137415 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2003-07-14 22:22:46+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/enum/Enum.java
+  - src/java/org/apache/commons/lang/exception/ExceptionUtils.java
+--------------------------------------------------
+Commit SHA: 670b91caba605fe85cacbe230107204e48c93f13
+Message: comments
+refactoring
+add escapeSql method
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137387 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Alex Chaffee
+Date: 2003-06-29 03:03:15+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringEscapeUtils.java
+--------------------------------------------------
+Commit SHA: 0cfce2932d2ee0c6f0d5cd642a86acf9135c95fb
+Message: Refactor code in ToStringBuilder.reflectionToString(...) into a new subclass called ReflectionToStringBuilder.
+All of the ToStringBuilder.reflectionToString(...) forward their calls to equivalent methods in ReflectionToStringBuilde.
+ReflectionToStringBuilder can  be subclassed to provide Field or value filtering.
+Since the unit tests exercis ToStringBuilder.reflectionToString(...) which then forwards those calls to ReflectionToStringBuilder, and ReflectionToStringBuilder does not provide new features (yet), there are no new unit test cases (yet).
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137354 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2003-06-03 20:15:32+00:00
+Files Affected:
+  - src/test/org/apache/commons/lang/builder/ToStringBuilderTest.java
+--------------------------------------------------
+Commit SHA: a0be4d2757a1e72f9b63eaca4c8fffdfd2ca8f61
+Message: Refactor code in ToStringBuilder.reflectionToString(...) into a new subclass called ReflectionToStringBuilder.
+All of the ToStringBuilder.reflectionToString(...) forward their calls to equivalent methods in ReflectionToStringBuilde.
+ReflectionToStringBuilder can  be subclassed to provide Field or value filtering.
+Since the unit tests exercis ToStringBuilder.reflectionToString(...) which then forwards those calls to ReflectionToStringBuilder, and ReflectionToStringBuilder does not provide new features (yet), there are no new unit test cases (yet).
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137353 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Gary D. Gregory
+Date: 2003-06-03 03:51:56+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/builder/ReflectionToStringBuilder.java
+  - src/java/org/apache/commons/lang/builder/ToStringBuilder.java
+  - src/java/org/apache/commons/lang/builder/ToStringStyle.java
+--------------------------------------------------
+Commit SHA: 5203441765cfa1b7c272bc4f66960a0225b5c636
+Message: refactoring Entities object in preparation for optimization
+add unit tests for Entities class
+move escape and unescape methods into Entities class
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137333 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Alex Chaffee
+Date: 2003-05-24 04:35:07+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/Entities.java
+  - src/java/org/apache/commons/lang/StringEscapeUtils.java
+  - src/test/org/apache/commons/lang/EntitiesTest.java
+  - src/test/org/apache/commons/lang/StringEscapeUtilsTest.java
+--------------------------------------------------
+Commit SHA: 4e443f9cfcd22ca1c2533e0ecba54900305e7b80
+Message: added some more entities from HTML 4.0 spec, refactored (Entities class), initialize maps on demand
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137280 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Alex Chaffee
+Date: 2003-04-02 06:14:46+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringEscapeUtils.java
+--------------------------------------------------
+Commit SHA: ab5351374121f428112e5f2cd1712f8d0edc7d62
+Message: * src/test/org/apache/commons/lang/exception/ExceptionUtilsTestCase.java
+  testPrintThrowables(): Previously printing some stack traces to
+  stdout as part of its tests which at first glance looks like a test
+  failure (but in reality isn't).  Here's a truncated example:
+
+  test.exception:
+       [echo] Running exception package tests ...
+       [java] .........................................
+       [java] ......org.apache.commons.lang.exception.ExceptionUtilsTestCase$Ex
+       [java]     at org.apache.commons.lang.exception.ExceptionUtilsTestCase.c
+       [java]  [wrapped] org.apache.commons.lang.exception.ExceptionUtilsTestCa
+       [java]     at org.apache.commons.lang.exception.ExceptionUtilsTestCase.c
+       [java]  [wrapped] org.apache.commons.lang.exception.ExceptionUtilsTestCa
+       [java]     at org.apache.commons.lang.exception.ExceptionUtilsTestCase.c
+       [java]     at org.apache.commons.lang.exception.ExceptionUtilsTestCase.t
+
+
+* src/java/org/apache/commons/lang/exception/ExceptionUtils.java
+  WRAPPED_MARKER: New constant for the " [wrapped] " text used when
+  printing exception stack traces.
+
+  getRootCauseStackTrace(Throwable): Replaced inline " [wrapped] "
+  text with use of new WRAPPED_MARKER constant.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137234 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Daniel Rall
+Date: 2003-01-20 23:04:19+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/exception/ExceptionUtils.java
+  - src/test/org/apache/commons/lang/exception/ExceptionUtilsTestCase.java
+--------------------------------------------------
+Commit SHA: c2d07cc3f0eb7db5e45c21b1c698715e27fcb64e
+Message: Fix infinite recursion in replace() when blank string used
+from Holger Krauth
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137231 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Stephen Colebourne
+Date: 2003-01-19 18:15:38+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/StringUtils.java
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: de74831603fc57cc566022384a8e5efbea903ef0
+Message: So my test was wrong. I was using the split method wrongly.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137159 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2002-11-23 00:51:34+00:00
+Files Affected:
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: e19abe9bc3b3edaefc76341657fbdd31e56a0adc
+Message: Threw in a test for newline replacement. This was a problem in String Taglib and having this test let me know it wasn't the fault of StringUtils.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137157 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2002-11-22 23:33:34+00:00
+Files Affected:
+  - src/test/org/apache/commons/lang/StringUtilsTest.java
+--------------------------------------------------
+Commit SHA: 27c8d12495566b4401bcb20129889094baf97428
+Message: getCause is 1.4 specific. Have replaced with getException.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137114 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2002-11-06 19:14:43+00:00
+Files Affected:
+  - src/test/org/apache/commons/lang/enum/EnumTest.java
+--------------------------------------------------
+Commit SHA: ed94aba0591edcf4651c834a5dddcb57cad2889c
+Message: Patch submitted by Fredrik Westermarck <fredrik.westermarck@mdh.se> that
+replaces a TODO now that we have a SystemUtils.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137091 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Henri Yandell
+Date: 2002-10-09 03:29:18+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/exception/ExceptionUtils.java
+--------------------------------------------------
+Commit SHA: 8ac7a8a0f4c9a5b50fc35c9429a2fe3d75001678
+Message: corrected a couple of refactoring items missed:
+   - in testGetThrowableI, replaced construction of explicit class instance with getThrowable abstract method
+   - in testPrintPartialStackTrace, replaced class name in startsWith assert from explcit class name to class from getNestable abstract method
+   - in testPrintStackTrace, replaced class name in startsWith assert from explicit class name to class name from getThrowableClass abstract method
+   - in testPrintStackTrace, replaced class name in indexOf assert from explicit class name to class name from getNestable abstract method
+removed extranous commented code
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137010 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Steven Caswell
+Date: 2002-09-11 19:40:14+00:00
+Files Affected:
+  - src/test/org/apache/commons/lang/exception/AbstractNestableTestCase.java
+--------------------------------------------------
+Commit SHA: 31c87c4b23e2f952c9a56ae509dec311e0d79cc0
+Message: refactored to share funcrionality from AbstractNestableTestCase
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137006 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Steven Caswell
+Date: 2002-09-11 18:16:53+00:00
+Files Affected:
+  - src/test/org/apache/commons/lang/exception/NestableExceptionTestCase.java
+  - src/test/org/apache/commons/lang/exception/NestableRuntimeExceptionTestCase.java
+--------------------------------------------------
+Commit SHA: bb372402d60b0b51be4be15bc2c65bd7cc72cc53
+Message: created by refactoring NestableException revision 1.3
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@137005 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Steven Caswell
+Date: 2002-09-11 18:16:10+00:00
+Files Affected:
+  - src/test/org/apache/commons/lang/exception/AbstractNestableTestCase.java
+--------------------------------------------------
+Commit SHA: 99ba8f14d5c2e563042b515bf0a8043c5618788b
+Message: CAUSE_METHOD_NAMES: Repurposed CAUSE_METHOD_NAME to be a list of
+method names which may yield a wrapped exception.
+
+getCause(Throwable): Now just wraps getCause(Throwable, String[]),
+passing in CAUSE_METHOD_NAMES as its list of method names.
+
+getCause(Throwable, String[]): Refactored code extracted from
+getCause(Throwable) which looks at a list of method names, plus a
+"detail" field.
+
+getCauseUsingMethodName(): Swapped parameter order for consistency.
+
+getCauseUsingFieldName(): New method which introspects fields instead
+of methods.
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@136967 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Daniel Rall
+Date: 2002-08-14 23:08:28+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/exception/ExceptionUtils.java
+--------------------------------------------------
+Commit SHA: 6fdd16815acb4d46bf82f94236e09291aba0ff5b
+Message: getCause(Throwable): Refactored into two methods which are called
+internally.  This will allow more cause method names to be added with
+ease.
+
+getCauseUsingWellKnownTypes(Throwable): Extracted from getCause().
+
+getCauseUsingMethodName(String, Throwable): Extracted from getCause().
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@136966 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Daniel Rall
+Date: 2002-08-14 21:05:19+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/exception/ExceptionUtils.java
+--------------------------------------------------
+Commit SHA: 58503e7eec3d8b40d9da863cb02f6ae0ff6578af
+Message: updated tests to reflect the following changes:
+deprecated method getLength(), replaced with getThrowableCount();
+deprecated indexOfThrowable(int, Class), replaced with indexOfThrowable(Class, int) to make signature consistent with other APIs;
+changed functionality of methods that receive an index argument to throw an IndexOutOfBoundsException if the index is specified incorrectly, rather than absorbing invalid indices silently, to bring in line with the String API
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@136951 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Steven Caswell
+Date: 2002-07-26 20:30:58+00:00
+Files Affected:
+  - src/test/org/apache/commons/lang/exception/NestableDelegateTestCase.java
+  - src/test/org/apache/commons/lang/exception/NestableExceptionTestCase.java
+  - src/test/org/apache/commons/lang/exception/NestableRuntimeExceptionTestCase.java
+--------------------------------------------------
+Commit SHA: e0340c896977e4dea905370bd8d7db05f1ad2b3f
+Message: deprecated method getLength(), replaced with getThrowableCount();
+deprecated indexOfThrowable(int, Class), replaced with indexOfThrowable(Class, int) to make signature consistent with other APIs;
+changed functionality of methods that receive an index argument to throw an IndexOutOfBoundsException if the index is specified incorrectly, rather than absorbing invalid indices silently, to bring in line with the String API
+cleaned up javadoc;
+rearranged methods alphabetically
+
+
+git-svn-id: https://svn.apache.org/repos/asf/jakarta/commons/proper/lang/trunk@136950 13f79535-47bb-0310-9956-ffa450edef68
+
+Author: Steven Caswell
+Date: 2002-07-26 20:30:10+00:00
+Files Affected:
+  - src/java/org/apache/commons/lang/exception/Nestable.java
+  - src/java/org/apache/commons/lang/exception/NestableDelegate.java
+  - src/java/org/apache/commons/lang/exception/NestableException.java
+  - src/java/org/apache/commons/lang/exception/NestableRuntimeException.java
+--------------------------------------------------
